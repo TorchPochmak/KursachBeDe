@@ -11,8 +11,8 @@ namespace FarmMetricsAPI.Data
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IServiceProvider serviceProvider) 
-            : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options, IServiceProvider serviceProvider)
+            : base(options)
         {
             _serviceProvider = serviceProvider;
         }
