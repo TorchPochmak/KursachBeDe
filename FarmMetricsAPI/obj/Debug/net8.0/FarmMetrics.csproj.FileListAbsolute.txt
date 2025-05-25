@@ -1,0 +1,8 @@
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.csproj.AssemblyReference.cache
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.GeneratedMSBuildEditorConfig.editorconfig
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.AssemblyInfoInputs.cache
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.AssemblyInfo.cs
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.csproj.CoreCompileInputs.cache
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.MvcApplicationPartsAssemblyInfo.cs
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.MvcApplicationPartsAssemblyInfo.cache
+E:\GitHub\WatchStore\WatchStoreAPI\obj\Debug\net8.0\FarmMetrics.sourcelink.json

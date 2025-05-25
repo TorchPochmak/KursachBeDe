@@ -1,0 +1,6 @@
+@FarmMetricsAPI_HostAddress = {{$dotenv ASPNETCORE_URLS}} # This will use the configured URL from appsettings.json through environment variables
+
+GET {{FarmMetricsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

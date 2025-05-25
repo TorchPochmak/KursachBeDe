@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: FarmMetricsAPI-db
+    environment:
+      POSTGRES_DB: FarmMetricsAPI-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - FarmMetricsAPI-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: FarmMetricsAPI-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: FarmMetricsAPI_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - FarmMetricsAPI-network
+
+  redis:
+    image: redis:latest
+    container_name: FarmMetricsAPI-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - FarmMetricsAPI-network
+
+  api:
+    build:
+      context: .
+      dockerfile: FarmMetricsAPI/Dockerfile
+    container_name: FarmMetricsAPI-api
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - DatabaseConfig__Host=postgres
+      - DatabaseConfig__Port=5432
+      - DatabaseConfig__Database=FarmMetricsAPI-db
+      - DatabaseConfig__Username=postgres
+      - DatabaseConfig__Password=postgres
+      - MongoDbConfig__ConnectionString=mongodb://user:password@mongodb:27017
+      - MongoDbConfig__DatabaseName=FarmMetricsAPI_mongo
+      - RedisConfig__ConnectionString=redis:6379
+    ports:
+      - "5148:80"
+    networks:
+      - FarmMetricsAPI-network
+
+networks:
+  FarmMetricsAPI-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data: 

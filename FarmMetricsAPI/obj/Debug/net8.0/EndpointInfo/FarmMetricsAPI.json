@@ -1,0 +1,1058 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Farm Metrics API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Admin/employees": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEmployeeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEmployeeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEmployeeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Admin/employees/{employeeId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Backup/create-backup": {
+      "post": {
+        "tags": [
+          "Backup"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Backup/restore-backup": {
+      "post": {
+        "tags": [
+          "Backup"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Backup/backup-files": {
+      "get": {
+        "tags": [
+          "Backup"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/comment/{farmId}/getall": {
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "farmId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/comment/{farmId}/create": {
+      "post": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "farmId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoComment"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoComment"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoComment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/comment/{farmId}/delete/{commentId}": {
+      "delete": {
+        "tags": [
+          "Comment"
+        ],
+        "parameters": [
+          {
+            "name": "farmId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/getall": {
+      "get": {
+        "tags": [
+          "Devices"
+        ],
+        "parameters": [
+          {
+            "name": "settlementId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/search": {
+      "get": {
+        "tags": [
+          "Devices"
+        ],
+        "parameters": [
+          {
+            "name": "settlementId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "metricId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/delete": {
+      "delete": {
+        "tags": [
+          "Devices"
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/devices/create": {
+      "post": {
+        "tags": [
+          "Devices"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettleMetricDevice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettleMetricDevice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettleMetricDevice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EmployeeClients": {
+      "get": {
+        "tags": [
+          "EmployeeClients"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EmployeeClients/search": {
+      "get": {
+        "tags": [
+          "EmployeeClients"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/getall": {
+      "get": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/get": {
+      "get": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/change": {
+      "post": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoFarm"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoFarm"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MongoFarm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/addprop": {
+      "post": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": { }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/deleteprop": {
+      "post": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/farm/bysettlement": {
+      "get": {
+        "tags": [
+          "Farm"
+        ],
+        "parameters": [
+          {
+            "name": "settlementId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/metricdata/{settlementId}/getall": {
+      "get": {
+        "tags": [
+          "MetricData"
+        ],
+        "parameters": [
+          {
+            "name": "settlementId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddEmployeeRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Metric": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "minValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "settleMetricDevices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SettleMetricDevice"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MetricData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "settleMetricDeviceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "device": {
+            "$ref": "#/components/schemas/SettleMetricDevice"
+          },
+          "metricValue": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MongoComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "info": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MongoCulture": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "squareMeters": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MongoFarm": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "settlementId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cultures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MongoCulture"
+            },
+            "nullable": true
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MongoMetric"
+            },
+            "nullable": true
+          },
+          "harvests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MongoHarvest"
+            },
+            "nullable": true
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MongoComment"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MongoHarvest": {
+        "type": "object",
+        "properties": {
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "info": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MongoMetric": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SettleMetricDevice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "metricId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "metric": {
+            "$ref": "#/components/schemas/Metric"
+          },
+          "settlementId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "settlement": {
+            "$ref": "#/components/schemas/Settlement"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metricData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Settlement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "nullable": true
+          },
+          "settleMetricDevices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SettleMetricDevice"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "settlementId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "settlement": {
+            "$ref": "#/components/schemas/Settlement"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserRegister": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme.",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

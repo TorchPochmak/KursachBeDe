@@ -1,0 +1,402 @@
+[
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.AdminController",
+    "Method": "GetEmployees",
+    "RelativePath": "api/Admin/employees",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.AdminController",
+    "Method": "AddEmployee",
+    "RelativePath": "api/Admin/employees",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "FarmMetricsAPI.Controllers.AddEmployeeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.AdminController",
+    "Method": "DeleteEmployee",
+    "RelativePath": "api/Admin/employees/{employeeId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.BackupController",
+    "Method": "GetBackupFiles",
+    "RelativePath": "api/Backup/backup-files",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.BackupController",
+    "Method": "CreateBackup",
+    "RelativePath": "api/Backup/create-backup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.BackupController",
+    "Method": "RestoreBackup",
+    "RelativePath": "api/Backup/restore-backup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "backupFileName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.EmployeeClientsController",
+    "Method": "GetAllClients",
+    "RelativePath": "api/EmployeeClients",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.EmployeeClientsController",
+    "Method": "SearchClients",
+    "RelativePath": "api/EmployeeClients/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.UsersController",
+    "Method": "GetUsers",
+    "RelativePath": "api/Users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.UsersController",
+    "Method": "Login",
+    "RelativePath": "api/Users/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "login",
+        "Type": "FarmMetricsAPI.Models.Postgres.UserLogin",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.UsersController",
+    "Method": "Register",
+    "RelativePath": "api/Users/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "register",
+        "Type": "FarmMetricsAPI.Models.Postgres.UserRegister",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.CommentController",
+    "Method": "Create",
+    "RelativePath": "api/comment/{farmId}/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "farmId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "comment",
+        "Type": "FarmMetricsAPI.Models.Mongo.MongoComment",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.CommentController",
+    "Method": "Delete",
+    "RelativePath": "api/comment/{farmId}/delete/{commentId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "farmId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "commentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.CommentController",
+    "Method": "GetAll",
+    "RelativePath": "api/comment/{farmId}/getall",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "farmId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.DevicesController",
+    "Method": "Create",
+    "RelativePath": "api/devices/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "device",
+        "Type": "FarmMetricsAPI.Models.Postgres.SettleMetricDevice",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.DevicesController",
+    "Method": "Delete",
+    "RelativePath": "api/devices/delete",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.DevicesController",
+    "Method": "GetAll",
+    "RelativePath": "api/devices/getall",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "settlementId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.DevicesController",
+    "Method": "Search",
+    "RelativePath": "api/devices/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "settlementId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "metricId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "AddProperty",
+    "RelativePath": "api/farm/addprop",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "properties",
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "GetBySettlement",
+    "RelativePath": "api/farm/bysettlement",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "settlementId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "Change",
+    "RelativePath": "api/farm/change",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "farmChanges",
+        "Type": "FarmMetricsAPI.Models.Mongo.MongoFarm",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "DeleteProperty",
+    "RelativePath": "api/farm/deleteprop",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "propertyNames",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "Get",
+    "RelativePath": "api/farm/get",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.FarmController",
+    "Method": "GetAll",
+    "RelativePath": "api/farm/getall",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FarmMetricsAPI.Controllers.MetricDataController",
+    "Method": "GetAll",
+    "RelativePath": "api/metricdata/{settlementId}/getall",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "settlementId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
