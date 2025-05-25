@@ -23,28 +23,36 @@ namespace FarmMetricsClient.Services
         }
 
         // Логин
+        public class UserLogin
+        {
+            public string Email { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
         public async Task<AuthResponse?> LoginAsync(string email, string password)
         {
-            var loginRequest = new { Email = email, Password = password };
-            var content = new StringContent(
-                JsonConvert.SerializeObject(loginRequest),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await _httpClient.PostAsync("api/Users/login", content);
+            var response = await _httpClient.PostAsync("api/auth/login",
+                new StringContent(
+                    JsonConvert.SerializeObject(new UserLogin { Email = email, Password = password }),
+                    Encoding.UTF8,
+                    "application/json"));
 
             if (response.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<AuthResponse>(json);
+                return JsonConvert.DeserializeObject<AuthResponse>(
+                    await response.Content.ReadAsStringAsync());
             }
 
             return null;
         }
 
-        // Регистрация
-        public async Task<bool> RegisterAsync(RegistrationRequest registrationData)
+        public class UserRegister
+        {
+            public string Name { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Phone { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
+        public async Task<HttpResponseMessage> RegisterAsync(UserRegister registrationData)
         {
             var content = new StringContent(
                 JsonConvert.SerializeObject(registrationData),
@@ -52,10 +60,14 @@ namespace FarmMetricsClient.Services
                 "application/json"
             );
 
-            var response = await _httpClient.PostAsync("api/Users/register", content);
-            return response.IsSuccessStatusCode;
+            return await _httpClient.PostAsync("api/auth/register", content);
         }
 
+
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------
         public async Task<List<Watch>?> GetAvailableWatchesAsync(string? filter = null, string? sortOption = null)
         {
             // Формируем URL с параметрами
@@ -464,7 +476,7 @@ namespace FarmMetricsClient.Services
             public int Quantity { get; set; }
             public string DeliveryAddress { get; set; } = string.Empty;
         }
-        
+
         public class AuthResponse
         {
             public string Token { get; set; } = string.Empty;

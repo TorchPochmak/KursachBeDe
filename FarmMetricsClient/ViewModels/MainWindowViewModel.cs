@@ -16,22 +16,20 @@ namespace FarmMetricsClient.ViewModels
         private string _loginStatus = string.Empty;
 
         private readonly ApiClient _apiClient;
-        private readonly Action<string, int?> _onLoginSuccessful; 
-        private readonly Action _onGuestModeSelected;
+        private readonly Action<string, int?> _onLoginSuccessful;
 
         public int? UserId
         {
             get => _userId;
             private set => SetField(ref _userId, value);
         }
-        // Конструктор
+
         public MainWindowViewModel(Action<string, int?> onLoginSuccessful)
         {
             _apiClient = new ApiClient("http://localhost:5148/"); 
             _onLoginSuccessful = onLoginSuccessful; 
 
             LoginCommand = new RelayCommand(async _ => await LoginAsync());
-            GuestModeCommand = new RelayCommand(_ => EnterGuestMode());
             OpenRegisterWindowCommand = new RelayCommand(_ => OpenRegisterWindow());
         }
 
@@ -54,7 +52,6 @@ namespace FarmMetricsClient.ViewModels
         }
 
         public ICommand LoginCommand { get; }
-        public ICommand GuestModeCommand { get; }
         public ICommand OpenRegisterWindowCommand { get; }
 
         private async Task LoginAsync()
@@ -66,8 +63,8 @@ namespace FarmMetricsClient.ViewModels
                 if (response != null)
                 {
                     Console.WriteLine($"[DEBUG] Авторизация прошла успешно для пользователя с ID: {response.UserId}");
-                    UserId = response.UserId; // Сохраняем ID пользователя.
-                    _onLoginSuccessful(response.Role, response.UserId); // Передаём ID в callback.
+                    UserId = response.UserId;
+                    _onLoginSuccessful(response.Role, response.UserId);
                     LoginStatus = string.Empty;
                 }
                 else
@@ -81,22 +78,12 @@ namespace FarmMetricsClient.ViewModels
             }
         }
 
-
-
-        // Метод для входа в гостевой режим
-        private void EnterGuestMode()
-        {
-            _onGuestModeSelected();
-        }
-
-        // Открытие окна регистрации
         private void OpenRegisterWindow()
         {
-            var registerWindow = new RegisterWindow(); // Создаём экземпляр окна регистрации
-            registerWindow.Show();                    // Открываем окно
+            var registerWindow = new RegisterWindow();
+            registerWindow.Show();
         }
 
-        // Вспомогательный метод установки значений свойств (для биндинга)
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             if (!Equals(field, value))
@@ -108,14 +95,13 @@ namespace FarmMetricsClient.ViewModels
             return false;
         }
 
-        // Реализация интерфейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
 
     // Реализация команды (RelayCommand) для обработки действий UI
     public class RelayCommand : ICommand

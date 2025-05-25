@@ -5,7 +5,6 @@ using System.Windows.Input;
 using FarmMetricsClient.Services;
 using static FarmMetricsClient.Services.ApiClient;
 
-
 namespace FarmMetricsClient.ViewModels
 {
     public class RegisterWindowViewModel : INotifyPropertyChanged
@@ -57,7 +56,7 @@ namespace FarmMetricsClient.ViewModels
 
         private async Task RegisterAsync()
         {
-            var registrationData = new RegistrationRequest
+            var registrationData = new UserRegister
             {
                 Name = Name,
                 Email = Email,
@@ -65,8 +64,16 @@ namespace FarmMetricsClient.ViewModels
                 Phone = Phone
             };
 
-            var success = await _apiClient.RegisterAsync(registrationData);
-            StatusMessage = success ? "Регистрация прошла успешно!" : "Ошибка при регистрации.";
+            var response = await _apiClient.RegisterAsync(registrationData);
+            
+            if (response?.IsSuccessStatusCode ?? false)
+            {
+                StatusMessage = "Регистрация прошла успешно!";
+            }
+            else
+            {
+                StatusMessage = "Ошибка при регистрации. Возможно, пользователь с таким email уже существует.";
+            }
         }
 
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")

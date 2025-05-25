@@ -20,7 +20,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="Добро пожаловать!" Classes="welcome-text" />
@@ -38,18 +37,14 @@
                     <Button Content="Войти" Width="300" Command="{Binding LoginCommand}"
                         HorizontalAlignment="Center" Classes="primary"
                         VerticalContentAlignment="Center" />
-                    <Button Content="Войти как гость" Width="300"
-                        Command="{Binding GuestModeCommand}"
+                        
+                    <Button Content="Регистрация" Width="300"
+                        Command="{Binding OpenRegisterWindowCommand}"  
                         HorizontalAlignment="Center" Classes="primary"
                         VerticalContentAlignment="Center" />
-                          <Button  Content="Регистрация" Width="300"
-                    Command="{Binding OpenRegisterWindowCommand}"  HorizontalAlignment="Center" Classes="primary"
-                        VerticalContentAlignment="Center" />
-
-
                 </StackPanel>
               
-                <TextBlock Grid.Row="5" Text="{Binding LoginStatus}" FontSize="16" Foreground="Red"
+                <TextBlock Grid.Row="4" Text="{Binding LoginStatus}" FontSize="16" Foreground="Red"
                     TextWrapping="Wrap"
                     HorizontalAlignment="Center" />
             </Grid>
