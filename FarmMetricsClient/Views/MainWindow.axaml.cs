@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using FarmMetricsClient.ViewModels;
 using FarmMetricsClient.Views.Admin;
+using FarmMetricsClient.Views.User;
 namespace FarmMetricsClient.Views
 {
     public partial class MainWindow : Window
@@ -25,7 +26,7 @@ namespace FarmMetricsClient.Views
                     OpenWindow(new AdminWindow());
                     break;
                 case "User":
-                 //   OpenWindow(new UserWindow(userId ?? 0));
+                    OpenWindow(new UserWindow(userId ?? 0));
                     break;
             }
         }
