@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -55,6 +57,20 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             get => _statusMessage;
             set => SetField(ref _statusMessage, value);
         }
+        private List<ApiClient.Settlement> _settlements;
+        private ApiClient.Settlement _selectedSettlement;
+
+        public List<ApiClient.Settlement> Settlements
+        {
+            get => _settlements;
+            set => SetField(ref _settlements, value);
+        }
+
+        public ApiClient.Settlement? SelectedSettlement
+        {
+            get => _selectedSettlement;
+            set => SetField(ref _selectedSettlement, value);
+        }
 
         public ICommand UpdateProfileCommand { get; }
         private readonly Action _closeAction;
@@ -72,8 +88,24 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             _phone = profile.Phone;
 
             UpdateProfileCommand = new RelayCommand(async _ => await UpdateProfile());
+            Task.Run(() => LoadSettlements(profile.Settlement)).ConfigureAwait(false);
         }
+        private async Task LoadSettlements(string currentSettlementName)
+        {
+            var settlements = await _apiClient.GetSettlementsAsync();
 
+            Settlements = new List<ApiClient.Settlement>{new ApiClient.Settlement { Id = -1,
+                Name = "Не выбрано" }}.Concat(settlements).ToList();
+
+            if (!string.IsNullOrEmpty(currentSettlementName))
+            {
+                SelectedSettlement = Settlements.FirstOrDefault(s => s.Name == currentSettlementName);
+            }
+            else
+            {
+                SelectedSettlement = Settlements.FirstOrDefault(s => s.Id == -1);
+            }
+        }
         private async Task UpdateProfile()
         {
             if (!string.IsNullOrEmpty(Password) && Password != ConfirmPassword)
@@ -92,17 +124,37 @@ namespace FarmMetricsClient.ViewModels.User.Pages
 
             var response = await _apiClient.UpdateUserProfileAsync(_userId, request);
 
-            if (response.IsSuccessStatusCode)
-            {
-                _onUpdateSuccess?.Invoke();
-                _closeAction?.Invoke(); 
-            }
-            else
+            if (!response.IsSuccessStatusCode)
             {
                 StatusMessage = "Ошибка при обновлении профиля";
+                return;
             }
-        }
 
+            if (SelectedSettlement != null)
+            {
+                if (SelectedSettlement.Id == -1)
+                {
+                    var removeResponse = await _apiClient.RemoveUserSettlementAsync(_userId);
+                    if (!removeResponse.IsSuccessStatusCode)
+                    {
+                        StatusMessage = "Профиль обновлен, но не удалось удалить населенный пункт";
+                        return;
+                    }
+                }
+                else
+                {
+                    var settlementResponse = await _apiClient.UpdateUserSettlementAsync(_userId, SelectedSettlement.Id);
+                    if (!settlementResponse.IsSuccessStatusCode)
+                    {
+                        StatusMessage = "Профиль обновлен, но не удалось изменить населенный пункт";
+                        return;
+                    }
+                }
+            }
+
+            _onUpdateSuccess?.Invoke();
+            _closeAction?.Invoke();
+        }
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             if (!Equals(field, value))

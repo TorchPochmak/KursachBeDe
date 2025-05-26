@@ -12,18 +12,28 @@
             <TextBox Watermark="Email" Text="{Binding Email}" />
             <TextBox Watermark="Телефон" Text="{Binding Phone}" />
             
+            <ComboBox ItemsSource="{Binding Settlements}" 
+                      SelectedItem="{Binding SelectedSettlement}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            
             <TextBox Watermark="Новый пароль" 
                      Text="{Binding Password}" 
                      PasswordChar="●" />
             <TextBox Watermark="Повторите пароль" 
                      Text="{Binding ConfirmPassword}" 
                      PasswordChar="●" />
-             <Button Content="Сохранить" Command="{Binding UpdateProfileCommand}" 
-                        HorizontalAlignment="Center" Classes="primary"
-                        VerticalContentAlignment="Center" />
+             
+            <Button Content="Сохранить" Command="{Binding UpdateProfileCommand}" 
+                    HorizontalAlignment="Center" Classes="primary"
+                    VerticalContentAlignment="Center" />
 
             <TextBlock Text="{Binding StatusMessage}" Foreground="Red" />
-            
         </StackPanel>
     </Grid>
 </UserControl>

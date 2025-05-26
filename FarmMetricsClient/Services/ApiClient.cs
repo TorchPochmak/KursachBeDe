@@ -102,8 +102,8 @@ namespace FarmMetricsClient.Services
             var response = await _httpClient.GetAsync($"api/auth/user/{userId}");
             if (response.IsSuccessStatusCode)
             {
-                var profile = JsonConvert.DeserializeObject<UserProfile>(
-                    await response.Content.ReadAsStringAsync());
+                var content = await response.Content.ReadAsStringAsync();
+                var profile = JsonConvert.DeserializeObject<UserProfile>(content);
 
                 if (profile != null && profile.Name?.StartsWith("[BANNED]") == true)
                 {
@@ -138,7 +138,7 @@ namespace FarmMetricsClient.Services
             public string Phone { get; set; } = string.Empty;
             public string Role { get; set; } = string.Empty;
             public string Settlement { get; set; } = string.Empty;
-
+            public int? SettlementId { get; set; }
             public bool IsBanned { get; set; }
         }
 
@@ -150,7 +150,66 @@ namespace FarmMetricsClient.Services
             public string? Password { get; set; }
         }
 
-        // todo после ипорта - проверить - подправить до 217 стр
+        public async Task<List<UserProfile>> GetAllUsersAsync(string filter = "")
+        {
+            var response = await _httpClient.GetAsync($"api/admin/users?filter={Uri.EscapeDataString(filter)}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<UserProfile>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<UserProfile>();
+        }
+        public async Task<HttpResponseMessage> BanUserAsync(int userId)
+        {
+            return await _httpClient.PostAsync($"api/admin/users/{userId}/ban", null);
+        }
+
+        public async Task<HttpResponseMessage> UnbanUserAsync(int userId)
+        {
+            return await _httpClient.PostAsync($"api/admin/users/{userId}/unban", null);
+        }
+
+
+        public class Settlement
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+        }
+
+        public async Task<List<Settlement>> GetSettlementsAsync()
+        {
+            var response = await _httpClient.GetAsync("api/settlements");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<Settlement>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<Settlement>();
+        }
+        public async Task<HttpResponseMessage> UpdateUserSettlementAsync(int userId, int settlementId)
+        {
+            var request = new UpdateSettlementRequest { SettlementId = settlementId };
+            var content = new StringContent(
+                JsonConvert.SerializeObject(request),
+                Encoding.UTF8,
+                "application/json"
+            );
+            return await _httpClient.PutAsync($"api/settlements/user/{userId}/settlement", content);
+        }
+
+        public class UpdateSettlementRequest
+        {
+            public int SettlementId { get; set; }
+        }
+        public async Task<HttpResponseMessage> RemoveUserSettlementAsync(int userId)
+        {
+            return await _httpClient.DeleteAsync($"api/settlements/user/{userId}/settlement");
+        }
+
+
+
+        // todo после ипорта - проверить ------------------------------
         public class Farm
         {
             public int Id { get; set; }
@@ -215,31 +274,6 @@ namespace FarmMetricsClient.Services
         {
             return await _httpClient.DeleteAsync($"api/farms/{farmId}");
         }
-
-        public async Task<List<UserProfile>> GetAllUsersAsync(string filter = "")
-        {
-            var response = await _httpClient.GetAsync($"api/admin/users?filter={Uri.EscapeDataString(filter)}");
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<List<UserProfile>>(
-                    await response.Content.ReadAsStringAsync());
-            }
-            return new List<UserProfile>();
-        }
-        public async Task<HttpResponseMessage> BanUserAsync(int userId)
-        {
-            return await _httpClient.PostAsync($"api/admin/users/{userId}/ban", null);
-        }
-
-        public async Task<HttpResponseMessage> UnbanUserAsync(int userId)
-        {
-            return await _httpClient.PostAsync($"api/admin/users/{userId}/unban", null);
-        }
-
-
-
-
-
         // -----------------------------------------------------------------------------------------------------------------------
         public async Task<List<Watch>?> GetAvailableWatchesAsync(string? filter = null, string? sortOption = null)
         {
