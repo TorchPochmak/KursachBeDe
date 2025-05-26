@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FarmMetricsAPI.Data;
 using FarmMetricsAPI.Models.Postgres;
-using BCrypt.Net;
+using FarmMetricsAPI.Data;
+using System.Linq;
 
 namespace FarmMetricsAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     [ApiController]
     public class AdminController : ControllerBase
     {
@@ -17,87 +16,73 @@ namespace FarmMetricsAPI.Controllers
         {
             _context = context;
         }
-        [HttpGet("employees")]
-        public async Task<IActionResult> GetEmployees()
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers(string filter = "")
         {
-            var employees = await _context.Employees
-                .Include(e => e.User)
-                .Select(e => new
+            var query = _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Settlement)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(u => 
+                    u.Name.Contains(filter) || 
+                    u.Email.Contains(filter) || 
+                    u.Phone.Contains(filter));
+            }
+
+            var users = await query
+                .Select(u => new 
                 {
-                    e.Id,
-                    e.Position,
-                    e.HireDate,
-                    UserInfo = new
-                    {
-                        e.User.Name,
-                        e.User.Email,
-                        e.User.Phone
-                    }
+                    u.Id,
+                    u.Name,
+                    u.Email,
+                    u.Phone,
+                    Role = u.Role.Name,
+                    Settlement = u.Settlement.Name,
+                    IsBanned = u.Name.StartsWith("[BANNED]")
                 })
                 .ToListAsync();
 
-            return Ok(employees);
+            return Ok(users);
         }
-        [HttpPost("employees")]
-        public async Task<IActionResult> AddEmployee([FromBody] AddEmployeeRequest request)
+
+        [HttpPost("users/{userId}/ban")]
+        public async Task<IActionResult> BanUser(int userId)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email || u.Phone == request.Phone))
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
             {
-                return BadRequest("Пользователь с данным email или телефоном уже существует.");
+                return NotFound();
             }
-            var employeeRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Employee");
-            if (employeeRole == null)
+
+            if (!user.Name.StartsWith("[BANNED]"))
             {
-                return BadRequest("Роль 'Employee' не найдена. Обратитесь к системному администратору.");
+                user.Name = $"[BANNED] {user.Name}";
+                await _context.SaveChangesAsync();
             }
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            var newUser = new User
-            {
-                Name = request.Name,
-                Email = request.Email,
-                Phone = request.Phone,
-                PasswordHash = passwordHash,
-                RoleId = employeeRole.Id
-            };
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
-
-            var newEmployee = new Employee
-            {
-                UserId = newUser.Id,
-                Position = request.Position
-            };
-            _context.Employees.Add(newEmployee);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Новый сотрудник успешно добавлен!" });
+            return Ok();
         }
 
-        [HttpDelete("employees/{employeeId}")]
-        public async Task<IActionResult> DeleteEmployee(int employeeId)
+        [HttpPost("users/{userId}/unban")]
+        public async Task<IActionResult> UnbanUser(int userId)
         {
-            var employee = await _context.Employees.Include(e => e.User).FirstOrDefaultAsync(e => e.Id == employeeId);
-            if (employee == null)
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
             {
-                return NotFound("Сотрудник не найден.");
+                return NotFound();
             }
 
-            _context.Employees.Remove(employee);
+            if (user.Name.StartsWith("[BANNED]"))
+            {
+                user.Name = user.Name.Replace("[BANNED] ", "");
+                await _context.SaveChangesAsync();
+            }
 
-            _context.Users.Remove(employee.User);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Сотрудник и его учетная запись успешно удалены." });
+            return Ok();
         }
-    }
-
-    public class AddEmployeeRequest
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Position { get; set; } = string.Empty;
     }
 }

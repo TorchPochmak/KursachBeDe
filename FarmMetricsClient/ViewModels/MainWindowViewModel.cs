@@ -26,8 +26,8 @@ namespace FarmMetricsClient.ViewModels
 
         public MainWindowViewModel(Action<string, int?> onLoginSuccessful)
         {
-            _apiClient = new ApiClient("http://localhost:5148/"); 
-            _onLoginSuccessful = onLoginSuccessful; 
+            _apiClient = new ApiClient("http://localhost:5148/");
+            _onLoginSuccessful = onLoginSuccessful;
 
             LoginCommand = new RelayCommand(async _ => await LoginAsync());
             OpenRegisterWindowCommand = new RelayCommand(_ => OpenRegisterWindow());
@@ -58,18 +58,37 @@ namespace FarmMetricsClient.ViewModels
         {
             try
             {
+                LoginStatus = ""; // Сбрасываем статус
+
                 var response = await _apiClient.LoginAsync(Email, Password);
 
-                if (response != null)
+                if (response == null)
                 {
-                    Console.WriteLine($"[DEBUG] Авторизация прошла успешно для пользователя с ID: {response.UserId}");
+                    LoginStatus = "Ошибка при подключении к серверу";
+                    return;
+                }
+
+                // Успешная авторизация
+                if (!string.IsNullOrEmpty(response.Token))
+                {
                     UserId = response.UserId;
                     _onLoginSuccessful(response.Role, response.UserId);
-                    LoginStatus = string.Empty;
+                    return;
+                }
+
+                // Обработка разных типов ошибок
+                if (response.IsBanned)
+                {
+                    LoginStatus = response.BanMessage;
                 }
                 else
                 {
-                    LoginStatus = "Неверные email или пароль.";
+                    LoginStatus = response.ErrorType switch
+                    {
+                        "UserNotFound" => "Пользователь с таким email не найден",
+                        "InvalidPassword" => "Неверный пароль",
+                        _ => response.BanMessage ?? "Ошибка авторизации"
+                    };
                 }
             }
             catch (Exception ex)
@@ -77,7 +96,6 @@ namespace FarmMetricsClient.ViewModels
                 LoginStatus = $"Ошибка подключения: {ex.Message}";
             }
         }
-
         private void OpenRegisterWindow()
         {
             var registerWindow = new RegisterWindow();
@@ -100,10 +118,10 @@ namespace FarmMetricsClient.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 
 
-    // Реализация команды (RelayCommand) для обработки действий UI
     public class RelayCommand : ICommand
     {
         private readonly Action<object?> _execute;

@@ -12,11 +12,10 @@ namespace FarmMetricsClient.ViewModels.Admin
 
         public AdminWindowViewModel(Action onLogout)
         {
-            CurrentView = new AdminEmployeesViewModel();
+            CurrentView = new AdminUsersViewModel();
 
-            ShowEmployeesCommand = new RelayCommand(_ => CurrentView = new AdminEmployeesViewModel());
-            ShowBackupsCommand = new RelayCommand(_ => CurrentView = new AdminBackupsViewModel());
-
+            ShowUsersCommand = new RelayCommand(_ => CurrentView = new AdminUsersViewModel());
+           // ShowSettlementsCommand = new RelayCommand(_ => CurrentView = new AdminSettlementsViewModel());
             LogoutCommand = new RelayCommand(_ => onLogout());
         }
 
@@ -30,15 +29,15 @@ namespace FarmMetricsClient.ViewModels.Admin
             }
         }
 
-        public ICommand ShowEmployeesCommand { get; }
-        public ICommand ShowBackupsCommand { get; }
+        public ICommand ShowUsersCommand { get; }
+        public ICommand ShowSettlementsCommand { get; }
         public ICommand LogoutCommand { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+        
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FarmMetricsClient.Views.User.Pages.EditProfileView"
+    x:DataType="pages:EditProfileViewModel"
+    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
+    
+    <Grid Margin="20">
+        <StackPanel Spacing="15" Width="400">
+            <TextBlock Text="Редактирование профиля" FontSize="18" FontWeight="Bold" Foreground="#1B5E20" />
+            
+            <TextBox Watermark="Имя" Text="{Binding Name}" />
+            <TextBox Watermark="Email" Text="{Binding Email}" />
+            <TextBox Watermark="Телефон" Text="{Binding Phone}" />
+            
+            <TextBox Watermark="Новый пароль" 
+                     Text="{Binding Password}" 
+                     PasswordChar="●" />
+            <TextBox Watermark="Повторите пароль" 
+                     Text="{Binding ConfirmPassword}" 
+                     PasswordChar="●" />
+             <Button Content="Сохранить" Command="{Binding UpdateProfileCommand}" 
+                        HorizontalAlignment="Center" Classes="primary"
+                        VerticalContentAlignment="Center" />
+
+            <TextBlock Text="{Binding StatusMessage}" Foreground="Red" />
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

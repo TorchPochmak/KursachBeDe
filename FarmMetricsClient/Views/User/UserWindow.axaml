@@ -1,75 +1,103 @@
-<!-- UserWindow.xaml -->
 <Window xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:FarmMetricsClient.ViewModels.User"
+    x:Class="FarmMetricsClient.Views.User.UserWindow"
     xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages"
     xmlns:views="clr-namespace:FarmMetricsClient.Views.User.Pages"
-    x:Class="FarmMetricsClient.Views.User.UserWindow"
     x:DataType="vm:UserWindowViewModel"
     Width="1000" Height="800"
     WindowStartupLocation="CenterScreen"
     Title="Окно пользователя">
 
-    <!--  
+    <Window.Background>
+        <ImageBrush Source="avares://FarmMetricsClient/Assets/fon.jpg" Stretch="UniformToFill" />
+    </Window.Background>
+
     <Window.DataTemplates>
-        <DataTemplate DataType="{x:Type pages:UserProfileViewModel}">
-            <views:UserProfileView />
+        <DataTemplate DataType="{x:Type pages:EditProfileViewModel}">
+            <views:EditProfileView Background="Transparent" />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pages:UserFarmsViewModel}">
-            <views:UserFarmsView />
+            <views:UserFarmsView Background="Transparent" />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pages:FarmDetailsViewModel}">
-            <views:FarmDetailsView />
+            <views:FarmDetailsView Background="Transparent" />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:FarmReportsViewModel}">
-            <views:FarmReportsView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:FarmHarvestsViewModel}">
-            <views:FarmHarvestsView />
-        </DataTemplate>
-    </Window.DataTemplates>="0,0,5,0" />
-                  -->  
+    </Window.DataTemplates>
+
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="220" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Background="#EEE" Spacing="10" VerticalAlignment="Top">
-            <Button Command="{Binding ShowProfileCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                <!--   <Image Source="avares://FarmMetricsClient/Assets/profile-icon.png" Width="20" Height="20" Margin="0,0,5,0" />
-                  -->  
-                  <TextBlock Text="Профиль" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+        <Border Grid.Column="0">
+            <StackPanel Spacing="10" VerticalAlignment="Top" Margin="0,20,0,0">
+                <Border Background="#AAE8F5E9" Padding="15" CornerRadius="10" Margin="10">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="avares://FarmMetricsClient/Assets/profil.png"
+                                Width="30" Height="30" Margin="0,0,10,0" />
+                            <TextBlock Text="{Binding UserProfile.Name}" FontWeight="Bold"
+                                FontSize="16" Foreground="Black" />
+                        </StackPanel>
 
-            <Button Command="{Binding ShowFarmsCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                 <!--   <Image Source="avares://FarmMetricsClient/Assets/farm-icon.png" Width="20" Height="20" Margin="0,0,5,0" />
-                     -->  
-                    <TextBlock Text="Мои участки" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+                        <StackPanel Spacing="5" Margin="40,0,0,0">
+                            <TextBlock Text="{Binding UserProfile.Email}" FontSize="14"
+                                Foreground="Black" />
+                            <TextBlock Text="{Binding UserProfile.Phone}" FontSize="14"
+                                Foreground="Black" />
+                            <TextBlock Text="{Binding UserProfile.Settlement}" FontSize="14"
+                                Foreground="Black" />
+                        </StackPanel>
 
-            <Button Command="{Binding ShowHarvestsCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                 <!--   <Image Source="avares://FarmMetricsClient/Assets/harvest-icon.png" Width="20" Height="20" Margin="0,0,5,0" />
-                     -->  
-                    <TextBlock Text="Сборы урожая" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+                        <Button Command="{Binding ShowEditProfileCommand}"
+                            HorizontalAlignment="Center"
+                            Width="150" Margin="0,5,0,0"
+                            Classes="menu-button">
+                            <TextBlock Text="Редактировать" VerticalAlignment="Center" FontSize="14" />
+                        </Button>
+                    </StackPanel>
+                </Border>
 
-            <Button Command="{Binding LogoutCommand}" Classes="menu-button"
-                HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="avares://FarmMetricsClient/Assets/exit-icon.png" Width="20" Height="20" Margin="0,0,5,0" />
-                    <TextBlock Text="Выход" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-        </StackPanel>
+                <Button Command="{Binding ShowFarmsCommand}" Classes="menu-button" Margin="10,5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Image Source="avares://FarmMetricsClient/Assets/farm-icon.png"
+                            Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Мои участки" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
 
-        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
+                <Button Command="{Binding ShowHarvestsCommand}" Classes="menu-button" Margin="10,5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Image Source="avares://FarmMetricsClient/Assets/harvest-icon.png"
+                            Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Сборы урожая" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding ShowDeleteAccountCommand}" Classes="menu-button danger"
+                    Margin="10,5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Image Source="avares://FarmMetricsClient/Assets/delete-icon.png"
+                            Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Удалить аккаунт" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding LogoutCommand}" Classes="menu-button" Margin="10,5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Image Source="avares://FarmMetricsClient/Assets/logout-icon.png"
+                            Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Выход" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Background="Transparent">
+            <ContentControl Content="{Binding CurrentView}" Background="Transparent" />
+        </Border>
     </Grid>
 </Window>

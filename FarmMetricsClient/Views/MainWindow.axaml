@@ -7,11 +7,11 @@
     WindowStartupLocation="CenterScreen">
 
     <Window.Background>
-        <ImageBrush Source="avares://FarmMetricsClient/Assets/image.png" Stretch="UniformToFill" />
+        <ImageBrush Source="avares://FarmMetricsClient/Assets/5.jpg" Stretch="UniformToFill" />
     </Window.Background>
 
     <Grid>
-        <Border Margin="150" BorderBrush="#0d1040" BorderThickness="5" CornerRadius="20"
+        <Border Margin="150" BorderBrush="#1B5E20" BorderThickness="5" CornerRadius="20"
             Background="#90FFFFFF" Padding="40">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.RowDefinitions>

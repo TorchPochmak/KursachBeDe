@@ -21,8 +21,6 @@ namespace FarmMetricsClient.Services
                 BaseAddress = new Uri(baseUrl)
             };
         }
-
-        // Логин
         public class UserLogin
         {
             public string Email { get; set; } = string.Empty;
@@ -30,21 +28,57 @@ namespace FarmMetricsClient.Services
         }
         public async Task<AuthResponse?> LoginAsync(string email, string password)
         {
-            var response = await _httpClient.PostAsync("api/auth/login",
-                new StringContent(
-                    JsonConvert.SerializeObject(new UserLogin { Email = email, Password = password }),
-                    Encoding.UTF8,
-                    "application/json"));
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return JsonConvert.DeserializeObject<AuthResponse>(
-                    await response.Content.ReadAsStringAsync());
+                var response = await _httpClient.PostAsync("api/auth/login",
+                    new StringContent(
+                        JsonConvert.SerializeObject(new UserLogin { Email = email, Password = password }),
+                        Encoding.UTF8,
+                        "application/json"));
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonConvert.DeserializeObject<AuthResponse>(responseContent);
+                }
+                else
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<AuthErrorResponse>(responseContent);
+
+                    return new AuthResponse
+                    {
+                        IsBanned = errorResponse?.ErrorType == "UserBanned",
+                        BanMessage = errorResponse?.Message ?? "Ошибка авторизации",
+                        ErrorType = errorResponse?.ErrorType ?? "UnknownError"
+                    };
+                }
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при авторизации: {ex.Message}");
+                return new AuthResponse
+                {
+                    BanMessage = $"Ошибка подключения: {ex.Message}",
+                    ErrorType = "ConnectionError"
+                };
+            }
         }
-
+        public class AuthErrorResponse
+        {
+            public string ErrorType { get; set; } = string.Empty;
+            public string Message { get; set; } = string.Empty;
+        }
+        public class AuthResponse
+        {
+            public string Token { get; set; } = string.Empty;
+            public string UserName { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public int UserId { get; set; }
+            public bool IsBanned { get; set; }
+            public string BanMessage { get; set; } = string.Empty;
+            public string ErrorType { get; set; } = string.Empty;
+        }
         public class UserRegister
         {
             public string Name { get; set; } = string.Empty;
@@ -63,11 +97,150 @@ namespace FarmMetricsClient.Services
             return await _httpClient.PostAsync("api/auth/register", content);
         }
 
+        public async Task<UserProfile?> GetUserProfileAsync(int userId)
+        {
+            var response = await _httpClient.GetAsync($"api/auth/user/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var profile = JsonConvert.DeserializeObject<UserProfile>(
+                    await response.Content.ReadAsStringAsync());
+
+                if (profile != null && profile.Name?.StartsWith("[BANNED]") == true)
+                {
+                    profile.IsBanned = true;
+                }
+
+                return profile;
+            }
+            return null;
+        }
+
+        public async Task<HttpResponseMessage> UpdateUserProfileAsync(int userId, UserUpdateRequest request)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(request),
+                Encoding.UTF8,
+                "application/json"
+            );
+            return await _httpClient.PutAsync($"api/auth/user/{userId}", content);
+        }
+
+        public async Task<HttpResponseMessage> DeleteUserAsync(int userId)
+        {
+            return await _httpClient.DeleteAsync($"api/auth/user/{userId}");
+        }
+
+        public class UserProfile
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Phone { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public string Settlement { get; set; } = string.Empty;
+
+            public bool IsBanned { get; set; }
+        }
+
+        public class UserUpdateRequest
+        {
+            public string? Name { get; set; }
+            public string? Email { get; set; }
+            public string? Phone { get; set; }
+            public string? Password { get; set; }
+        }
+
+        // todo после ипорта - проверить - подправить до 217 стр
+        public class Farm
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Settlement { get; set; } = string.Empty;
+            public List<Culture> Cultures { get; set; } = new();
+            public List<Metric> Metrics { get; set; } = new();
+            public List<Harvest> Harvests { get; set; } = new();
+        }
+
+        public class Culture
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Area { get; set; }
+        }
+
+        public class Metric
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Value { get; set; }
+        }
+
+        public class Harvest
+        {
+            public DateTime Date { get; set; }
+            public string CultureName { get; set; } = string.Empty;
+            public double Amount { get; set; }
+        }
+        public async Task<List<Farm>?> GetUserFarmsAsync(int userId)
+        {
+            var response = await _httpClient.GetAsync($"api/farms/user/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<Farm>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return null;
+        }
+
+        public async Task<Farm?> GetFarmDetailsAsync(int farmId)
+        {
+            var response = await _httpClient.GetAsync($"api/farms/{farmId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<Farm>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return null;
+        }
+
+        public async Task<HttpResponseMessage> AddFarmAsync(Farm farm)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(farm),
+                Encoding.UTF8,
+                "application/json"
+            );
+            return await _httpClient.PostAsync("api/farms", content);
+        }
+
+        public async Task<HttpResponseMessage> DeleteFarmAsync(int farmId)
+        {
+            return await _httpClient.DeleteAsync($"api/farms/{farmId}");
+        }
+
+        public async Task<List<UserProfile>> GetAllUsersAsync(string filter = "")
+        {
+            var response = await _httpClient.GetAsync($"api/admin/users?filter={Uri.EscapeDataString(filter)}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<UserProfile>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<UserProfile>();
+        }
+        public async Task<HttpResponseMessage> BanUserAsync(int userId)
+        {
+            return await _httpClient.PostAsync($"api/admin/users/{userId}/ban", null);
+        }
+
+        public async Task<HttpResponseMessage> UnbanUserAsync(int userId)
+        {
+            return await _httpClient.PostAsync($"api/admin/users/{userId}/unban", null);
+        }
 
 
 
 
-// -----------------------------------------------------------------------------------------------------------------------
+
+        // -----------------------------------------------------------------------------------------------------------------------
         public async Task<List<Watch>?> GetAvailableWatchesAsync(string? filter = null, string? sortOption = null)
         {
             // Формируем URL с параметрами
@@ -477,14 +650,7 @@ namespace FarmMetricsClient.Services
             public string DeliveryAddress { get; set; } = string.Empty;
         }
 
-        public class AuthResponse
-        {
-            public string Token { get; set; } = string.Empty;
-            public string UserName { get; set; } = string.Empty;
-            public string Role { get; set; } = string.Empty;
 
-            public int UserId { get; set; }
-        }
 
         public class RegistrationRequest
         {

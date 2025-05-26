@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FarmMetricsClient.Views.User.Pages.UserFarmsView"
+    x:DataType="pages:UserFarmsViewModel"
+    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="10">
+            <TextBox Width="300"
+                Watermark="Поиск по названию участка..."
+                Text="{Binding FilterText, Mode=TwoWay}"
+                Classes="search"
+                VerticalAlignment="Center"
+                Height="35" />
+
+            <Button Command="{Binding ReloadFarmsCommand}"
+                Classes="action-button"
+                ToolTip.Tip="Обновить список">
+                <Image Source="avares://FarmMetricsClient/Assets/refresh-icon.png"
+                    Width="20" Height="20" />
+            </Button>
+
+            <Button Command="{Binding AddFarmCommand}"
+                Classes="action-button success"
+                ToolTip.Tip="Добавить новый участок">
+                <Image Source="avares://FarmMetricsClient/Assets/add-icon.png"
+                    Width="20" Height="20" />
+            </Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10">
+            <ItemsControl ItemsSource="{Binding Farms}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#0d1040"
+                            BorderThickness="2"
+                            Margin="10"
+                            CornerRadius="10"
+                            Padding="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="5">
+                                    <TextBlock Text="{Binding Name}"
+                                        FontWeight="Bold"
+                                        FontSize="18"
+                                        Foreground="#0d1040" />
+
+                                    <TextBlock Text="{Binding Settlement}"
+                                        FontSize="14"
+                                        Foreground="Gray" />
+
+                                    <TextBlock FontSize="14">
+                                        <Run Text="Культуры: " Foreground="Gray" />
+                                        <Run Text="{Binding Cultures.Count}" />
+                                    </TextBlock>
+
+                                    <TextBlock FontSize="14">
+                                        <Run Text="Метрики: " Foreground="Gray" />
+                                        <Run Text="{Binding Metrics.Count}" />
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                    <Button Classes="action-button"
+                                        Tag="{Binding Id}">
+                                        <Image
+                                            Source="avares://FarmMetricsClient/Assets/delete-icon2.png"
+                                            Width="20" Height="20" />
+                                    </Button>
+<!-- todo прикрутить команды-->
+                                    <Button Classes="action-button"
+                                        Tag="{Binding Id}"
+                                        
+                                        CommandParameter="{Binding Id}">
+                                        <Image
+                                            Source="avares://FarmMetricsClient/Assets/details-icon.png"
+                                            Width="20" Height="20" />
+                                    </Button>
+
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

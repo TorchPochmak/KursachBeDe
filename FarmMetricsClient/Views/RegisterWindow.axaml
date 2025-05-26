@@ -10,7 +10,7 @@
     <Grid>
         <StackPanel   VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
             <TextBlock Text="Регистрация" FontWeight="Bold"
-            FontSize="18" Foreground="#0d1040" HorizontalAlignment="Center" />
+            FontSize="18" Foreground="#1B5E20" HorizontalAlignment="Center" />
 
             <TextBox Watermark="Имя" Width="250" Text="{Binding Name}" Classes="input" />
             <TextBox Watermark="Email" Width="250" Text="{Binding Email}"  Classes="input"/>

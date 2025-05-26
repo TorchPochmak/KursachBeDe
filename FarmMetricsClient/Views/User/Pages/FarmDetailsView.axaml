@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FarmMetricsClient.Views.User.Pages.FarmDetailsView"
+    x:DataType="pages:FarmDetailsViewModel"
+    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="10">
+            <Button Command="{Binding BackCommand}" 
+                    Classes="action-button">
+                <Image Source="avares://FarmMetricsClient/Assets/back-icon.png" 
+                       Width="20" Height="20" />
+            </Button>
+            
+            <TextBlock Text="{Binding Farm.Name}" 
+                       FontSize="20" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <TabControl Grid.Row="1" Margin="10">
+            <TabItem Header="Культуры">
+                <!-- Список культур -->
+            </TabItem>
+            
+            <TabItem Header="Метрики">
+                <!-- Графики метрик -->
+            </TabItem>
+            
+            <TabItem Header="Сборы урожая">
+                <!-- История сборов урожая -->
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

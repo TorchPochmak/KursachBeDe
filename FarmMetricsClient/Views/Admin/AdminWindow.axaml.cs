@@ -1,4 +1,3 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using FarmMetricsClient.ViewModels.Admin;
@@ -10,8 +9,7 @@ namespace FarmMetricsClient.Views.Admin
         public AdminWindow()
         {
             InitializeComponent();
-
-                  DataContext = new AdminWindowViewModel(OnLogout); 
+            DataContext = new AdminWindowViewModel(OnLogout); 
         }
 
         private void OnLogout()
@@ -19,6 +17,7 @@ namespace FarmMetricsClient.Views.Admin
             new MainWindow().Show();
             Close();
         }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);

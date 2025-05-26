@@ -5,16 +5,17 @@
     xmlns:views="clr-namespace:FarmMetricsClient.Views.Admin.Pages"
     x:Class="FarmMetricsClient.Views.Admin.AdminWindow"
     x:DataType="vm:AdminWindowViewModel"
-    Width="1000" Height="800" Title="Окно администратора"
-    WindowStartupLocation="CenterScreen">
-
+    Width="1000" Height="800"
+    WindowStartupLocation="CenterScreen"
+    Title="Окно администратора">
+    <Window.Background>
+        <ImageBrush Source="avares://FarmMetricsClient/Assets/fon.jpg" Stretch="UniformToFill" />
+    </Window.Background>
     <Window.DataTemplates>
-        <DataTemplate DataType="{x:Type pages:AdminEmployeesViewModel}">
-            <views:AdminEmployeesView />
+        <DataTemplate DataType="{x:Type pages:AdminUsersViewModel}">
+            <views:AdminUsersView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:AdminBackupsViewModel}">
-            <views:AdminBackupsView />
-        </DataTemplate>
+
     </Window.DataTemplates>
 
     <Grid>
@@ -22,33 +23,33 @@
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Border Grid.Column="0">
+            <StackPanel >
+                <Button Command="{Binding ShowUsersCommand}" Classes="menu-button">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="avares://FarmMetricsClient/Assets/users-icon.png"
+                            Width="20" Height="20" Margin="0,0,5,0" />
+                        <TextBlock Text="Пользователи" />
+                    </StackPanel>
+                </Button>
 
-        <StackPanel Grid.Column="0" Background="#EEE" Spacing="10">
-            <Button Command="{Binding ShowEmployeesCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="avares://FarmMetricsClient/Assets/client-icon.png" Width="20"
-                        Height="20" Margin="0,0,5,0" />
-                    <TextBlock Text="Сотрудники" />
-                </StackPanel>
-            </Button>
+                <Button Command="{Binding ShowSettlementsCommand}" Classes="menu-button">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Населенные пункты" />
+                    </StackPanel>
+                </Button>
 
-            <Button Command="{Binding ShowBackupsCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="avares://FarmMetricsClient/Assets/backups-icon.png" Width="20"
-                        Height="20" Margin="0,0,5,0" />
-                    <TextBlock Text="Управление" />
-                </StackPanel>
-            </Button>
-
-            <Button Command="{Binding LogoutCommand}" Classes="menu-button">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="avares://FarmMetricsClient/Assets/exit-icon.png" Width="20"
-                        Height="20" Margin="0,0,5,0" />
-                    <TextBlock Text="Выход" />
-                </StackPanel>
-            </Button>
-        </StackPanel>
-
-        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
+                <Button Command="{Binding LogoutCommand}" Classes="menu-button">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="avares://FarmMetricsClient/Assets/exit-icon.png"
+                            Width="20" Height="20" Margin="0,0,5,0" />
+                        <TextBlock Text="Выход" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="1" Background="Transparent">
+            <ContentControl Content="{Binding CurrentView}" Background="Transparent" />
+        </Border>
     </Grid>
 </Window>

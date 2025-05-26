@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "OdhkfVo7T/25uA77kxTNNt1pnImhHAIwYqSOU9fNUFk=",
+  "Source": "FarmMetricsAPI",
+  "BasePath": "_content/FarmMetricsAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

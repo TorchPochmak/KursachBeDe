@@ -29,18 +29,41 @@ namespace FarmMetricsAPI.Controllers
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == login.Email);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.PasswordHash))
+            // Пользователь не найден
+            if (user == null)
             {
-                return Unauthorized("Invalid email or password");
+                return Unauthorized(new
+                {
+                    ErrorType = "UserNotFound",
+                    Message = "Пользователь с таким email не найден"
+                });
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(login.Password, user.PasswordHash))
+            {
+                return Unauthorized(new
+                {
+                    ErrorType = "InvalidPassword",
+                    Message = "Неверный пароль"
+                });
+            }
+
+            if (user.Name?.StartsWith("[BANNED]") == true)
+            {
+                return Unauthorized(new
+                {
+                    ErrorType = "UserBanned",
+                    Message = "Ваш аккаунт заблокирован. Обратитесь к администратору."
+                });
             }
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Name ?? string.Empty),
-                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                new Claim(ClaimTypes.Role, user.Role?.Name ?? "User"),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+    {
+        new Claim(ClaimTypes.Name, user.Name ?? string.Empty),
+        new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+        new Claim(ClaimTypes.Role, user.Role?.Name ?? "User"),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -91,6 +114,76 @@ namespace FarmMetricsAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "User registered successfully" });
+        }
+
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Settlement)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.Phone,
+                Role = user.Role?.Name,
+                Settlement = user.Settlement?.Name
+            });
+        }
+
+        [HttpPut("user/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateRequest request)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            user.Name = request.Name ?? user.Name;
+            user.Email = request.Email ?? user.Email;
+            user.Phone = request.Phone ?? user.Phone;
+
+            if (!string.IsNullOrEmpty(request.Password))
+            {
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "User updated successfully" });
+        }
+
+        [HttpDelete("user/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "User deleted successfully" });
+        }
+
+        public class UserUpdateRequest
+        {
+            public string? Name { get; set; }
+            public string? Email { get; set; }
+            public string? Phone { get; set; }
+            public string? Password { get; set; }
         }
     }
 }
