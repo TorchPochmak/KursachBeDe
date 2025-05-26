@@ -10,32 +10,46 @@ namespace FarmMetricsClient.ViewModels.User.Pages
 {
     public class FarmDetailsViewModel : INotifyPropertyChanged
     {
-        private readonly ApiClient _apiClient;
         private readonly int _farmId;
+        private readonly ApiClient _apiClient;
         private readonly Action _onBack;
-        private ApiClient.Farm _farm;
 
-        public ApiClient.Farm Farm
+        private ApiClient.Farm? _farm;
+        public ApiClient.Farm? Farm
         {
             get => _farm;
             set { _farm = value; OnPropertyChanged(); }
         }
 
+        public ObservableCollection<ApiClient.Culture> Cultures { get; } = new();
+        public ObservableCollection<ApiClient.Metric> Metrics { get; } = new();
+        public ObservableCollection<ApiClient.Harvest> Harvests { get; } = new();
+
         public ICommand BackCommand { get; }
 
         public FarmDetailsViewModel(int farmId, Action onBack)
         {
-            _apiClient = new ApiClient("http://localhost:5148/");
             _farmId = farmId;
+            _apiClient = new ApiClient("http://localhost:5148/");
             _onBack = onBack;
-            BackCommand = new RelayCommand(_ => _onBack());
+            BackCommand = new RelayCommand(_ => _onBack?.Invoke());
 
-            _ = LoadFarm();
+            _ = LoadFarmDetails();
         }
 
-        private async Task LoadFarm()
+        private async Task LoadFarmDetails()
         {
-            Farm = await _apiClient.GetFarmDetailsAsync(_farmId) ?? new ApiClient.Farm();
+            Farm = await _apiClient.GetFarmDetailsAsync(_farmId);
+            Cultures.Clear();
+            Metrics.Clear();
+            Harvests.Clear();
+
+            if (Farm != null)
+            {
+                foreach (var c in Farm.Cultures) Cultures.Add(c);
+                foreach (var m in Farm.Metrics) Metrics.Add(m);
+                foreach (var h in Farm.Harvests) Harvests.Add(h);
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

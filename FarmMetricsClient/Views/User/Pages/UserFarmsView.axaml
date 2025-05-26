@@ -65,17 +65,17 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+
                                     <Button Classes="action-button"
-                                        Tag="{Binding Id}">
+                                        Tag="{Binding Id}"
+                                        Click="OnDeleteFarmClick">
                                         <Image
                                             Source="avares://FarmMetricsClient/Assets/delete-icon2.png"
                                             Width="20" Height="20" />
                                     </Button>
-<!-- todo прикрутить команды-->
                                     <Button Classes="action-button"
                                         Tag="{Binding Id}"
-                                        
-                                        CommandParameter="{Binding Id}">
+                                        Click="OnOpenFarmDetailsClick">
                                         <Image
                                             Source="avares://FarmMetricsClient/Assets/details-icon.png"
                                             Width="20" Height="20" />

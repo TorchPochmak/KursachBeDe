@@ -23,6 +23,9 @@
         <DataTemplate DataType="{x:Type pages:FarmDetailsViewModel}">
             <views:FarmDetailsView Background="Transparent" />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pages:AddFarmViewModel}">
+            <views:FarmDetailsView Background="Transparent" />
+        </DataTemplate>
     </Window.DataTemplates>
 
 

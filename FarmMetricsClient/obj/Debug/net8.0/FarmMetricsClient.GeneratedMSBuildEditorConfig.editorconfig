@@ -25,6 +25,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/AdminWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/Pages/AdminSettlementsView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/Pages/AdminUsersView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
@@ -77,6 +80,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/RegisterWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/aida/KursachBeDe/FarmMetricsClient/Views/User/Pages/AddFarmView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/User/Pages/EditProfileView.axaml]

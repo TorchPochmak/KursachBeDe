@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FarmMetricsClient.Views.Admin.Pages.AdminSettlementsView"
+    x:DataType="pages:AdminSettlementsViewModel"
+    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.Admin.Pages">
+
+    <Grid ColumnDefinitions="2*,3*">
+        <StackPanel Grid.Column="0" Margin="10">
+            <TextBlock Text="Населённые пункты" FontWeight="Bold" FontSize="18"/>
+            <ListBox ItemsSource="{Binding Settlements}" 
+                     SelectedItem="{Binding SelectedSettlement}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBox Width="120" Text="{Binding NewSettlementName, Mode=TwoWay}" Watermark="Название"/>
+                <Button Content="Добавить" Click="OnAddSettlementClick" Margin="5,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock Text="Устройства" FontWeight="Bold" FontSize="18"/>
+            <ItemsControl ItemsSource="{Binding Devices}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{Binding Id}" />
+                            <TextBlock Text="{Binding MetricId}" />
+                            <TextBlock Text="{Binding RegisteredAt}" />
+                            <Button Content="Удалить" Tag="{Binding Id}" Click="OnDeleteDeviceClick"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBox Width="60" Text="{Binding NewDeviceMetricId, Mode=TwoWay}" Watermark="MetricId"/>
+                <DatePicker SelectedDate="{Binding NewDeviceRegisteredAt, Mode=TwoWay}" />
+                <Button Content="Добавить устройство" Click="OnAddDeviceClick" Margin="5,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

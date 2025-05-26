@@ -3,38 +3,50 @@
     x:Class="FarmMetricsClient.Views.User.Pages.FarmDetailsView"
     x:DataType="pages:FarmDetailsViewModel"
     xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="10">
-            <Button Command="{Binding BackCommand}" 
-                    Classes="action-button">
-                <Image Source="avares://FarmMetricsClient/Assets/back-icon.png" 
-                       Width="20" Height="20" />
-            </Button>
-            
-            <TextBlock Text="{Binding Farm.Name}" 
-                       FontSize="20" 
-                       FontWeight="Bold"
-                       VerticalAlignment="Center"/>
+    <Grid Margin="20">
+        <StackPanel Spacing="15">
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <Button Content="Назад" Command="{Binding BackCommand}" Width="80" />
+                <TextBlock Text="{Binding Farm.Name}" FontSize="22" FontWeight="Bold" />
+            </StackPanel>
+
+            <TextBlock Text="Культуры:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
+            <ItemsControl ItemsSource="{Binding Cultures}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <TextBlock Text="{Binding Name}" FontWeight="Medium" />
+                            <TextBlock Text="{Binding Area}" Foreground="Gray" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="Метрики:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
+            <ItemsControl ItemsSource="{Binding Metrics}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Value}" Foreground="Gray" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="Сборы урожая:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
+            <ItemsControl ItemsSource="{Binding Harvests}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <TextBlock Text="{Binding CultureName}" />
+                            <TextBlock Text="{Binding Amount}" Foreground="Gray" />
+                            <TextBlock Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" Foreground="Gray" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-
-        <TabControl Grid.Row="1" Margin="10">
-            <TabItem Header="Культуры">
-                <!-- Список культур -->
-            </TabItem>
-            
-            <TabItem Header="Метрики">
-                <!-- Графики метрик -->
-            </TabItem>
-            
-            <TabItem Header="Сборы урожая">
-                <!-- История сборов урожая -->
-            </TabItem>
-        </TabControl>
     </Grid>
 </UserControl>

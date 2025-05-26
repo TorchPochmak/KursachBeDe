@@ -13,6 +13,7 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         private readonly ApiClient _apiClient;
         private readonly int _userId;
         private string _filterText = string.Empty;
+        private readonly Action _showAddFarmDialog;
         private readonly Action<int> _showFarmDetails;
 
         public ObservableCollection<ApiClient.Farm> Farms { get; } = new();
@@ -40,15 +41,16 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         {
             _userId = userId;
             _apiClient = new ApiClient("http://localhost:5148/");
+            _showAddFarmDialog = showAddFarmDialog;
             _showFarmDetails = showFarmDetails;
 
             ReloadFarmsCommand = new RelayCommand(async _ => await ReloadFarms());
-            AddFarmCommand = new RelayCommand(_ => showAddFarmDialog());
+            AddFarmCommand = new RelayCommand(_ => _showAddFarmDialog());
             DeleteFarmCommand = new RelayCommand(async farmId =>
             {
                 if (farmId is int id)
                 {
-                    await DeleteFarmAsync(id);
+                    await DeleteFarmAsyncInner(id);
                 }
             });
             OpenFarmDetailsCommand = new RelayCommand(farmId =>
@@ -87,13 +89,23 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             }
         }
 
-        private async Task DeleteFarmAsync(int farmId)
+        public async void DeleteFarmAsync(int farmId)
+        {
+            await DeleteFarmAsyncInner(farmId);
+        }
+
+        private async Task DeleteFarmAsyncInner(int farmId)
         {
             var response = await _apiClient.DeleteFarmAsync(farmId);
             if (response.IsSuccessStatusCode)
             {
                 await ReloadFarms();
             }
+        }
+
+        public void OpenFarmDetails(int farmId)
+        {
+            _showFarmDetails(farmId);
         }
 
         public async Task ReloadFarms()

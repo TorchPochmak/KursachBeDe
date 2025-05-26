@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FarmMetricsClient.Views.User.Pages.AddFarmView"
+    x:DataType="pages:AddFarmViewModel"
+    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
+
+    <Grid Margin="30">
+        <StackPanel Spacing="12" Width="350">
+            <TextBlock Text="Добавление участка" FontSize="18" FontWeight="Bold" Foreground="#0d1040" />
+
+            <TextBox Watermark="Название участка" Text="{Binding Name}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Добавить" Command="{Binding AddFarmCommand}" Width="120" />
+                <Button Content="Отмена" Command="{Binding CancelCommand}" Width="100" />
+            </StackPanel>
+            
+            <TextBlock Text="{Binding StatusMessage}" Foreground="Red" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -96,8 +96,17 @@ namespace FarmMetricsClient.ViewModels.User
 
         private void ShowAddFarmDialog()
         {
-            // тут добавляем участок  и после вызываем  ShowFarms() для обновления списка
+            CurrentView = new AddFarmViewModel(
+                _userId,
+                async () =>
+                {
+                    await Task.Delay(100);
+                    ShowFarms();
+                },
+                () => ShowFarms()
+            );
         }
+
 
         private async Task DeleteAccount()
         {

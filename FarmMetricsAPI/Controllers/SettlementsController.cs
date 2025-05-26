@@ -50,7 +50,7 @@ namespace FarmMetricsAPI.Controllers
 
             return Ok();
         }
-        
+
         [HttpDelete("user/{userId}/settlement")]
         public async Task<IActionResult> RemoveUserSettlement(int userId)
         {
@@ -65,6 +65,29 @@ namespace FarmMetricsAPI.Controllers
 
             return Ok();
         }
+        [HttpPost]
+        public async Task<IActionResult> AddSettlement([FromBody] AddSettlementRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Name))
+                return BadRequest("Name required");
+
+            var exists = await _context.Settlements.AnyAsync(s => s.Name == request.Name);
+            if (exists)
+                return BadRequest("Settlement already exists");
+
+            var settlement = new Settlement { Name = request.Name };
+            _context.Settlements.Add(settlement);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { settlement.Id, settlement.Name });
+        }
+
+        public class AddSettlementRequest
+        {
+            public string Name { get; set; } = string.Empty;
+        }
+
+
         public class UpdateSettlementRequest
         {
             public int SettlementId { get; set; }

@@ -15,6 +15,9 @@
         <DataTemplate DataType="{x:Type pages:AdminUsersViewModel}">
             <views:AdminUsersView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pages:AdminSettlementsViewModel}">
+            <views:AdminUsersView />
+        </DataTemplate>
 
     </Window.DataTemplates>
 
@@ -24,7 +27,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0">
-            <StackPanel >
+            <StackPanel>
                 <Button Command="{Binding ShowUsersCommand}" Classes="menu-button">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="avares://FarmMetricsClient/Assets/users-icon.png"

@@ -207,6 +207,63 @@ namespace FarmMetricsClient.Services
             return await _httpClient.DeleteAsync($"api/settlements/user/{userId}/settlement");
         }
 
+        // Settlement create
+        public async Task<Settlement?> AddSettlementAsync(string name)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(new { Name = name }),
+                Encoding.UTF8, "application/json"
+            );
+            var response = await _httpClient.PostAsync("api/settlements", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var str = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Settlement>(str);
+            }
+            return null;
+        }
+
+        public async Task<List<SettleMetricDevice>> GetDevicesBySettlementAsync(int settlementId)
+        {
+            var response = await _httpClient.GetAsync($"api/devices/getall?settlementId={settlementId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<SettleMetricDevice>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<SettleMetricDevice>();
+        }
+
+        public async Task<SettleMetricDevice?> AddDeviceAsync(SettleMetricDevice device)
+        {
+            var content = new StringContent(
+                JsonConvert.SerializeObject(device),
+                Encoding.UTF8, "application/json"
+            );
+            var response = await _httpClient.PostAsync("api/devices/create", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var str = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<SettleMetricDevice>(str);
+            }
+            return null;
+        }
+
+        public async Task<bool> DeleteDeviceAsync(int deviceId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/devices/delete?deviceId={deviceId}");
+            return response.IsSuccessStatusCode;
+        }
+
+        // Device model
+        public class SettleMetricDevice
+        {
+            public int Id { get; set; }
+            public int MetricId { get; set; }
+            public int SettlementId { get; set; }
+            public DateTime RegisteredAt { get; set; }
+        }
+
 
 
         // todo после ипорта - проверить ------------------------------
