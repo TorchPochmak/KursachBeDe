@@ -6,7 +6,7 @@ namespace FarmMetricsAPI.Models.Mongo;
 public class MongoMetric
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonRepresentation(BsonType.Int32)]
     public int Id { get; set; }
 
     public string Name { get; set; } = "";

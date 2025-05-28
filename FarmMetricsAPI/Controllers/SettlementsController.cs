@@ -82,6 +82,38 @@ namespace FarmMetricsAPI.Controllers
             return Ok(new { settlement.Id, settlement.Name });
         }
 
+        [HttpGet("{settlementId}/can-delete")]
+        public async Task<IActionResult> CanDeleteSettlement(int settlementId)
+        {
+            var hasUsers = await _context.Users.AnyAsync(u => u.SettlementId == settlementId);
+
+            var hasDevices = await _context.SettleMetricDevices.AnyAsync(d => d.SettlementId == settlementId);
+
+            // var hasFarms = ... проверяем наличие ферм в этом населенном пункте ?
+
+            return Ok(!hasUsers && !hasDevices);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var settlement = await _context.Settlements.FindAsync(id);
+            if (settlement == null)
+            {
+                return NotFound();
+            }
+
+            bool hasUsers = await _context.Users.AnyAsync(u => u.SettlementId == id);
+            bool hasDevices = await _context.SettleMetricDevices.AnyAsync(d => d.SettlementId == id);
+
+            if (hasUsers || hasDevices)
+            {
+                return BadRequest("Cannot delete settlement with related users or devices");
+            }
+
+            _context.Settlements.Remove(settlement);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
         public class AddSettlementRequest
         {
             public string Name { get; set; } = string.Empty;

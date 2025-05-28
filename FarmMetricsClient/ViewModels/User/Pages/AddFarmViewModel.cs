@@ -7,6 +7,8 @@ using FarmMetricsClient.Services;
 
 namespace FarmMetricsClient.ViewModels.User.Pages
 {
+
+    // todo
     public class AddFarmViewModel : INotifyPropertyChanged
     {
         private readonly int _userId;
@@ -53,7 +55,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             var farm = new ApiClient.Farm
             {
                 Name = Name,
-                // Можно добавить другие поля по необходимости
             };
 
             var response = await _apiClient.AddFarmAsync(farm);

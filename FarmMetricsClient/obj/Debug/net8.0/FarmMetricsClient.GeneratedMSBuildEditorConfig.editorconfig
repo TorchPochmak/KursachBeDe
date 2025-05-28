@@ -25,6 +25,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/AdminWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/Pages/AdminDevicesView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/aida/KursachBeDe/FarmMetricsClient/Views/Admin/Pages/AdminSettlementsView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 

@@ -80,9 +80,7 @@ namespace FarmMetricsClient.ViewModels.Admin.Pages
             {
                 filtered = filtered.Where(u =>
                     (u.Name?.Contains(FilterText, StringComparison.OrdinalIgnoreCase) == true) ||
-                    (u.Email?.Contains(FilterText, StringComparison.OrdinalIgnoreCase) == true) ||
-                    (u.Phone?.Contains(FilterText, StringComparison.OrdinalIgnoreCase) == true) ||
-                    (u.Settlement?.Contains(FilterText, StringComparison.OrdinalIgnoreCase) == true));
+                    (u.Email?.Contains(FilterText, StringComparison.OrdinalIgnoreCase) == true));
             }
 
             FilteredUsers.Clear();

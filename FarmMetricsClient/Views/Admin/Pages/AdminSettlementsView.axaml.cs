@@ -17,23 +17,22 @@ namespace FarmMetricsClient.Views.Admin.Pages
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OnAddSettlementClick(object? sender, RoutedEventArgs e)
+        private async void OnDeleteSettlementClick(object sender, RoutedEventArgs e)
         {
-            if (DataContext is AdminSettlementsViewModel vm)
-                vm.AddSettlementAsync();
+            if (sender is Button button && button.Tag is int settlementId &&
+                DataContext is AdminSettlementsViewModel viewModel)
+            {
+                await viewModel.DeleteSettlementAsync(settlementId);
+            }
         }
 
-        private void OnAddDeviceClick(object? sender, RoutedEventArgs e)
+        private async void OnShowDevicesClick(object sender, RoutedEventArgs e)
         {
-            if (DataContext is AdminSettlementsViewModel vm)
-                vm.AddDeviceAsync();
-        }
-
-        private void OnDeleteDeviceClick(object? sender, RoutedEventArgs e)
-        {
-            if (sender is Button btn && btn.Tag is int deviceId &&
-                DataContext is AdminSettlementsViewModel vm)
-                vm.DeleteDeviceAsync(deviceId);
+            if (sender is Button button && button.Tag is int settlementId &&
+                DataContext is AdminSettlementsViewModel viewModel)
+            {
+                await viewModel.ShowDevicesAsync(settlementId);
+            }
         }
     }
 }

@@ -16,9 +16,11 @@
             <views:AdminUsersView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pages:AdminSettlementsViewModel}">
-            <views:AdminUsersView />
+            <views:AdminSettlementsView />
         </DataTemplate>
-
+        <DataTemplate DataType="{x:Type pages:AdminDevicesViewModel}">
+            <views:AdminDevicesView />
+        </DataTemplate>
     </Window.DataTemplates>
 
     <Grid>

@@ -21,11 +21,7 @@ namespace FarmMetricsClient.Services
                 BaseAddress = new Uri(baseUrl)
             };
         }
-        public class UserLogin
-        {
-            public string Email { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
+
         public async Task<AuthResponse?> LoginAsync(string email, string password)
         {
             try
@@ -64,28 +60,7 @@ namespace FarmMetricsClient.Services
                 };
             }
         }
-        public class AuthErrorResponse
-        {
-            public string ErrorType { get; set; } = string.Empty;
-            public string Message { get; set; } = string.Empty;
-        }
-        public class AuthResponse
-        {
-            public string Token { get; set; } = string.Empty;
-            public string UserName { get; set; } = string.Empty;
-            public string Role { get; set; } = string.Empty;
-            public int UserId { get; set; }
-            public bool IsBanned { get; set; }
-            public string BanMessage { get; set; } = string.Empty;
-            public string ErrorType { get; set; } = string.Empty;
-        }
-        public class UserRegister
-        {
-            public string Name { get; set; } = string.Empty;
-            public string Email { get; set; } = string.Empty;
-            public string Phone { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
+
         public async Task<HttpResponseMessage> RegisterAsync(UserRegister registrationData)
         {
             var content = new StringContent(
@@ -130,26 +105,6 @@ namespace FarmMetricsClient.Services
             return await _httpClient.DeleteAsync($"api/auth/user/{userId}");
         }
 
-        public class UserProfile
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-            public string Email { get; set; } = string.Empty;
-            public string Phone { get; set; } = string.Empty;
-            public string Role { get; set; } = string.Empty;
-            public string Settlement { get; set; } = string.Empty;
-            public int? SettlementId { get; set; }
-            public bool IsBanned { get; set; }
-        }
-
-        public class UserUpdateRequest
-        {
-            public string? Name { get; set; }
-            public string? Email { get; set; }
-            public string? Phone { get; set; }
-            public string? Password { get; set; }
-        }
-
         public async Task<List<UserProfile>> GetAllUsersAsync(string filter = "")
         {
             var response = await _httpClient.GetAsync($"api/admin/users?filter={Uri.EscapeDataString(filter)}");
@@ -170,20 +125,12 @@ namespace FarmMetricsClient.Services
             return await _httpClient.PostAsync($"api/admin/users/{userId}/unban", null);
         }
 
-
-        public class Settlement
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-        }
-
         public async Task<List<Settlement>> GetSettlementsAsync()
         {
             var response = await _httpClient.GetAsync("api/settlements");
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<List<Settlement>>(
-                    await response.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<List<Settlement>>(await response.Content.ReadAsStringAsync());
             }
             return new List<Settlement>();
         }
@@ -198,55 +145,52 @@ namespace FarmMetricsClient.Services
             return await _httpClient.PutAsync($"api/settlements/user/{userId}/settlement", content);
         }
 
-        public class UpdateSettlementRequest
-        {
-            public int SettlementId { get; set; }
-        }
         public async Task<HttpResponseMessage> RemoveUserSettlementAsync(int userId)
         {
             return await _httpClient.DeleteAsync($"api/settlements/user/{userId}/settlement");
         }
 
-        // Settlement create
         public async Task<Settlement?> AddSettlementAsync(string name)
         {
-            var content = new StringContent(
-                JsonConvert.SerializeObject(new { Name = name }),
-                Encoding.UTF8, "application/json"
-            );
-            var response = await _httpClient.PostAsync("api/settlements", content);
+            var response = await _httpClient.PostAsync("api/settlements",
+                new StringContent(
+                    JsonConvert.SerializeObject(new { Name = name }),
+                    Encoding.UTF8,
+                    "application/json"));
+
             if (response.IsSuccessStatusCode)
             {
-                var str = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Settlement>(str);
+                return JsonConvert.DeserializeObject<Settlement>(
+                    await response.Content.ReadAsStringAsync());
             }
             return null;
         }
 
-        public async Task<List<SettleMetricDevice>> GetDevicesBySettlementAsync(int settlementId)
+        public async Task<bool> DeleteSettlementAsync(int settlementId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/settlements/{settlementId}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> CanDeleteSettlementAsync(int settlementId)
+        {
+            var response = await _httpClient.GetAsync($"api/settlements/{settlementId}/can-delete");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<bool>(await response.Content.ReadAsStringAsync());
+            }
+            return false;
+        }
+
+        public async Task<List<Device>> GetDevicesBySettlementAsync(int settlementId)
         {
             var response = await _httpClient.GetAsync($"api/devices/getall?settlementId={settlementId}");
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<List<SettleMetricDevice>>(
+                return JsonConvert.DeserializeObject<List<Device>>(
                     await response.Content.ReadAsStringAsync());
             }
-            return new List<SettleMetricDevice>();
-        }
-
-        public async Task<SettleMetricDevice?> AddDeviceAsync(SettleMetricDevice device)
-        {
-            var content = new StringContent(
-                JsonConvert.SerializeObject(device),
-                Encoding.UTF8, "application/json"
-            );
-            var response = await _httpClient.PostAsync("api/devices/create", content);
-            if (response.IsSuccessStatusCode)
-            {
-                var str = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<SettleMetricDevice>(str);
-            }
-            return null;
+            return new List<Device>();
         }
 
         public async Task<bool> DeleteDeviceAsync(int deviceId)
@@ -255,46 +199,8 @@ namespace FarmMetricsClient.Services
             return response.IsSuccessStatusCode;
         }
 
-        // Device model
-        public class SettleMetricDevice
-        {
-            public int Id { get; set; }
-            public int MetricId { get; set; }
-            public int SettlementId { get; set; }
-            public DateTime RegisteredAt { get; set; }
-        }
 
-
-
-        // todo после ипорта - проверить ------------------------------
-        public class Farm
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-            public string Settlement { get; set; } = string.Empty;
-            public List<Culture> Cultures { get; set; } = new();
-            public List<Metric> Metrics { get; set; } = new();
-            public List<Harvest> Harvests { get; set; } = new();
-        }
-
-        public class Culture
-        {
-            public string Name { get; set; } = string.Empty;
-            public double Area { get; set; }
-        }
-
-        public class Metric
-        {
-            public string Name { get; set; } = string.Empty;
-            public double Value { get; set; }
-        }
-
-        public class Harvest
-        {
-            public DateTime Date { get; set; }
-            public string CultureName { get; set; } = string.Empty;
-            public double Amount { get; set; }
-        }
+        // черновики 
         public async Task<List<Farm>?> GetUserFarmsAsync(int userId)
         {
             var response = await _httpClient.GetAsync($"api/farms/user/{userId}");
@@ -331,6 +237,100 @@ namespace FarmMetricsClient.Services
         {
             return await _httpClient.DeleteAsync($"api/farms/{farmId}");
         }
+
+        // модели
+        public class UserLogin
+        {
+            public string Email { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
+        public class AuthErrorResponse
+        {
+            public string ErrorType { get; set; } = string.Empty;
+            public string Message { get; set; } = string.Empty;
+        }
+        public class AuthResponse
+        {
+            public string Token { get; set; } = string.Empty;
+            public string UserName { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public int UserId { get; set; }
+            public bool IsBanned { get; set; }
+            public string BanMessage { get; set; } = string.Empty;
+            public string ErrorType { get; set; } = string.Empty;
+        }
+        public class UserRegister
+        {
+            public string Name { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Phone { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
+        public class UserProfile
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string Phone { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public string Settlement { get; set; } = string.Empty;
+            public int? SettlementId { get; set; }
+            public bool IsBanned { get; set; }
+        }
+        public class UserUpdateRequest
+        {
+            public string? Name { get; set; }
+            public string? Email { get; set; }
+            public string? Phone { get; set; }
+            public string? Password { get; set; }
+        }
+        public class Settlement
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public bool CanBeDeleted { get; set; }
+        }
+
+        public class UpdateSettlementRequest
+        {
+            public int SettlementId { get; set; }
+        }
+
+        public class Device
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string MetricName { get; set; } = string.Empty;
+            public DateTime RegisteredAt { get; set; }
+        }
+
+        public class Farm
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Settlement { get; set; } = string.Empty;
+            public List<Culture> Cultures { get; set; } = new();
+            public List<Metric> Metrics { get; set; } = new();
+            public List<Harvest> Harvests { get; set; } = new();
+        }
+        public class Culture
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Area { get; set; }
+        }
+        public class Metric
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Value { get; set; }
+        }
+
+        public class Harvest
+        {
+            public DateTime Date { get; set; }
+            public string CultureName { get; set; } = string.Empty;
+            public double Amount { get; set; }
+        }
+
         // -----------------------------------------------------------------------------------------------------------------------
         public async Task<List<Watch>?> GetAvailableWatchesAsync(string? filter = null, string? sortOption = null)
         {
