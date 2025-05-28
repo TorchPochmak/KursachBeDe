@@ -23,7 +23,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Text="Метрики:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
+            <!-- <TextBlock Text="Метрики:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
             <ItemsControl ItemsSource="{Binding Metrics}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -33,7 +33,7 @@
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </ItemsControl> -->
 
             <TextBlock Text="Сборы урожая:" FontWeight="Bold" FontSize="16" Margin="0,14,0,0"/>
             <ItemsControl ItemsSource="{Binding Harvests}">

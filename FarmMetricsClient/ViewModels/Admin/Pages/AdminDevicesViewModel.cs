@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using FarmMetricsClient.Services;
+using FarmMetricsClient.Views.Admin.Pages;
 
 namespace FarmMetricsClient.ViewModels.Admin.Pages
 {
@@ -67,12 +69,19 @@ namespace FarmMetricsClient.ViewModels.Admin.Pages
 
         public async Task AddDeviceAsync()
         {
-            //  добавление нового устройства
-            
-            await LoadDevicesAsync(); 
-        }
+            try
+            {
+                var addDeviceWindow = new AddDeviceWindow(_settlementId);
+                addDeviceWindow.Show();
 
-        public async Task DeleteDeviceAsync(int deviceId)
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при открытии окна добавления устройства: {ex.Message}");
+            }
+        }
+        private RelayCommand _refreshCommand;
+        public ICommand RefreshCommand => _refreshCommand ??= new RelayCommand(async _ => await LoadDevicesAsync()); public async Task DeleteDeviceAsync(int deviceId)
         {
             try
             {

@@ -52,13 +52,11 @@ namespace FarmMetricsClient.ViewModels.User
 
             ShowEditProfileCommand = new RelayCommand(_ => ShowEditProfile());
             ShowFarmsCommand = new RelayCommand(_ => ShowFarms());
-            //ShowHarvestsCommand = new RelayCommand(_ => CurrentView = new FarmHarvestsViewModel(userId));
             ShowDeleteAccountCommand = new RelayCommand(async _ => await DeleteAccount());
             LogoutCommand = new RelayCommand(_ => _onLogoutCallback());
 
             _ = LoadUserProfile();
 
-            // Для старта сразу профиль
             CurrentView = null;
         }
 

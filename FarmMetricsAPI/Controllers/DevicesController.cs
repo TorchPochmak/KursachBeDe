@@ -25,10 +25,23 @@ public class DevicesController : ControllerBase
     public async Task<IActionResult> GetAll([FromQuery] int settlementId)
     {
         var devices = await _dbContext.SettleMetricDevices
-            .Where(d => d.SettlementId == settlementId)
-            .ToListAsync();
+    .Where(d => d.SettlementId == settlementId)
+    .Include(d => d.Metric)
+    .Include(d => d.Settlement)
+    .ToListAsync();
 
-        return Ok(devices);
+        var result = devices.Select(d => new DeviceDto
+        {
+            Id = d.Id,
+            MetricName = d.Metric?.Name ?? "",
+            MinValue = d.Metric?.MinValue ?? 0,
+            MaxValue = d.Metric?.MaxValue ?? 0,
+            SettlementName = d.Settlement?.Name ?? "",
+            RegisteredAt = d.RegisteredAt
+        }).ToList();
+
+        return Ok(result);
+
     }
 
     [HttpGet("search")]
@@ -55,10 +68,23 @@ public class DevicesController : ControllerBase
 
         var devices = await query
             .Include(d => d.Metric)
+            .Include(d => d.Settlement)
             .ToListAsync();
 
-        return Ok(devices);
+        var result = devices.Select(d => new DeviceDto
+        {
+            Id = d.Id,
+            MetricName = d.Metric?.Name ?? "",
+            MinValue = d.Metric?.MinValue ?? 0,
+            MaxValue = d.Metric?.MaxValue ?? 0,
+            SettlementName = d.Settlement?.Name ?? "",
+            RegisteredAt = d.RegisteredAt
+        }).ToList();
+
+        return Ok(result);
     }
+
+
 
     [HttpDelete("delete")]
     public async Task<IActionResult> Delete([FromQuery] int deviceId)
@@ -103,4 +129,15 @@ public class DevicesController : ControllerBase
         await _dbContext.SaveChangesAsync();
         return Ok(device);
     }
-} 
+
+    public class DeviceDto
+    {
+        public int Id { get; set; }
+        public string MetricName { get; set; } = "";
+        public double MinValue { get; set; }
+        public double MaxValue { get; set; }
+        public string SettlementName { get; set; } = "";
+        public DateTime RegisteredAt { get; set; }
+    }
+
+}

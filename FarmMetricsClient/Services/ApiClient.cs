@@ -199,7 +199,28 @@ namespace FarmMetricsClient.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<List<Metric>> GetAllMetricsAsync()
+        {
+            var response = await _httpClient.GetAsync("api/metrics/getall");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<Metric>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<Metric>();
+        }
 
+
+        public async Task<bool> AddDeviceAsync(SettleMetricDevice device)
+        {
+            var response = await _httpClient.PostAsync("api/devices/create",
+                new StringContent(
+                    JsonConvert.SerializeObject(device),
+                    Encoding.UTF8,
+                    "application/json"));
+
+            return response.IsSuccessStatusCode;
+        }
         // черновики 
         public async Task<List<Farm>?> GetUserFarmsAsync(int userId)
         {
@@ -299,11 +320,21 @@ namespace FarmMetricsClient.Services
         public class Device
         {
             public int Id { get; set; }
-            public string Name { get; set; } = string.Empty;
             public string MetricName { get; set; } = string.Empty;
+            public double MinValue { get; set; }
+            public double MaxValue { get; set; }
             public DateTime RegisteredAt { get; set; }
         }
+        public class SettleMetricDevice
+        {
+            public int Id { get; set; }
+            public int MetricId { get; set; }
+            public double MinValue { get; set; }
+            public double MaxValue { get; set; }
+            public int SettlementId { get; set; }
+            public DateTime RegisteredAt { get; set; }
 
+        }
         public class Farm
         {
             public int Id { get; set; }
@@ -320,9 +351,12 @@ namespace FarmMetricsClient.Services
         }
         public class Metric
         {
+            public int Id { get; set; }
             public string Name { get; set; } = string.Empty;
-            public double Value { get; set; }
+            public double MinValue { get; set; }
+            public double MaxValue { get; set; }
         }
+
 
         public class Harvest
         {
