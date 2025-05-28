@@ -41,6 +41,8 @@ namespace FarmMetricsClient.ViewModels.User
         public ICommand ShowDeleteAccountCommand { get; }
         public ICommand LogoutCommand { get; }
 
+        public ICommand ShowMetricsCommand { get; }
+
         private readonly ApiClient _apiClient;
         private readonly Action _onLogoutCallback;
 
@@ -54,15 +56,25 @@ namespace FarmMetricsClient.ViewModels.User
             ShowFarmsCommand = new RelayCommand(_ => ShowFarms());
             ShowDeleteAccountCommand = new RelayCommand(async _ => await DeleteAccount());
             LogoutCommand = new RelayCommand(_ => _onLogoutCallback());
-
+            ShowMetricsCommand = new RelayCommand(_ => ShowMetrics());
             _ = LoadUserProfile();
 
             CurrentView = null;
         }
+        private void ShowMetrics()
+        {
+            CurrentView = new UserMetricsViewModel(
+                _userId,
+                () => CurrentView = null
+            );
+        }
+
 
         private async Task LoadUserProfile()
         {
             UserProfile = await _apiClient.GetUserProfileAsync(_userId);
+
+            Console.WriteLine($"User Profile Loaded - SettlementId: {UserProfile?.SettlementId}, Settlement: {UserProfile?.Settlement}");
         }
 
         private void ShowEditProfile()
@@ -96,6 +108,7 @@ namespace FarmMetricsClient.ViewModels.User
         {
             CurrentView = new AddFarmViewModel(
                 _userId,
+                UserProfile.Settlement ?? "Не указан",
                 async () =>
                 {
                     await Task.Delay(100);

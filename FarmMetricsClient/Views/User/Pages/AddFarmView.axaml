@@ -1,21 +1,47 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="FarmMetricsClient.Views.User.Pages.AddFarmView"
-    x:DataType="pages:AddFarmViewModel"
-    xmlns:pages="clr-namespace:FarmMetricsClient.ViewModels.User.Pages">
-
-    <Grid Margin="30">
-        <StackPanel Spacing="12" Width="350">
-            <TextBlock Text="Добавление участка" FontSize="18" FontWeight="Bold" Foreground="#0d1040" />
-
-            <TextBox Watermark="Название участка" Text="{Binding Name}" />
-
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <Button Content="Добавить" Command="{Binding AddFarmCommand}" Width="120" />
-                <Button Content="Отмена" Command="{Binding CancelCommand}" Width="100" />
-            </StackPanel>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmMetricsClient.Views.User.Pages.AddFarmView"
+             xmlns:vm="clr-namespace:FarmMetricsClient.ViewModels.User.Pages"
+             x:DataType="vm:AddFarmViewModel">
+    
+    <StackPanel Spacing="10" Margin="20" Width="300">
+        <TextBlock Text="Добавление нового участка" 
+                  FontSize="18" 
+                  FontWeight="Bold"
+                  Margin="0,0,0,10"/>
+        
+        <TextBox Watermark="Название участка"
+                Text="{Binding Name, Mode=TwoWay}"
+                FontSize="14"/>
+        
+        <TextBlock Text="Населенный пункт:"
+                  FontSize="14"/>
+        
+        <Border BorderBrush="#CCC" 
+               BorderThickness="1"
+               Padding="10"
+               CornerRadius="4">
+            <TextBlock Text="{Binding SettlementName}"
+                      FontSize="14"/>
+        </Border>
+        
+        <StackPanel Orientation="Horizontal" 
+                   HorizontalAlignment="Right"
+                   Spacing="10"
+                   Margin="0,20,0,0">
+            <Button Content="Отмена"
+                   Command="{Binding CancelCommand}"
+                   Width="100"/>
             
-            <TextBlock Text="{Binding StatusMessage}" Foreground="Red" />
+            <Button Content="Добавить"
+                   Command="{Binding AddCommand}"
+                   Width="100"
+                   Classes="Primary"/>
         </StackPanel>
-    </Grid>
+        
+        <TextBlock Text="{Binding StatusMessage}"
+                  Foreground="Red"
+                  FontSize="14"
+                  Margin="0,10,0,0"/>
+    </StackPanel>
 </UserControl>

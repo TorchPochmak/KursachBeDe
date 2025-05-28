@@ -26,6 +26,9 @@
         <DataTemplate DataType="{x:Type pages:AddFarmViewModel}">
             <views:AddFarmView Background="Transparent" />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pages:UserMetricsViewModel}">
+            <views:UserMetricsView Background="Transparent" />
+        </DataTemplate>
     </Window.DataTemplates>
 
 
@@ -77,6 +80,14 @@
                         <Image Source="avares://FarmMetricsClient/Assets/harvest-icon.png"
                             Width="24" Height="24" Margin="0,0,10,0" />
                         <TextBlock Text="Сборы урожая" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding ShowMetricsCommand}" Classes="menu-button" Margin="10,5">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Image Source="avares://FarmMetricsClient/Assets/metrics-icon.png"
+                            Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Метрики" VerticalAlignment="Center" FontSize="14" />
                     </StackPanel>
                 </Button>
 

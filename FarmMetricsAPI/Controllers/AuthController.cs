@@ -29,7 +29,6 @@ namespace FarmMetricsAPI.Controllers
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == login.Email);
 
-            // Пользователь не найден
             if (user == null)
             {
                 return Unauthorized(new
@@ -136,6 +135,7 @@ namespace FarmMetricsAPI.Controllers
                 user.Email,
                 user.Phone,
                 Role = user.Role?.Name,
+                SettlementId = user.Settlement?.Id,
                 Settlement = user.Settlement?.Name
             });
         }

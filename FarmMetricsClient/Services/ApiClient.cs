@@ -89,7 +89,6 @@ namespace FarmMetricsClient.Services
             }
             return null;
         }
-
         public async Task<HttpResponseMessage> UpdateUserProfileAsync(int userId, UserUpdateRequest request)
         {
             var content = new StringContent(
@@ -251,7 +250,7 @@ namespace FarmMetricsClient.Services
                 Encoding.UTF8,
                 "application/json"
             );
-            return await _httpClient.PostAsync("api/farms", content);
+            return await _httpClient.PostAsync("api/farm/create", content);
         }
 
         public async Task<HttpResponseMessage> DeleteFarmAsync(int farmId)
@@ -259,6 +258,32 @@ namespace FarmMetricsClient.Services
             return await _httpClient.DeleteAsync($"api/farms/{farmId}");
         }
 
+
+        public async Task<List<MetricData>> GetMetricsBySettlementAsync(int settlementId)
+        {
+            var response = await _httpClient.GetAsync($"api/metricdata/{settlementId}/getall");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<MetricData>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<MetricData>();
+        }
+
+        public class MetricData
+        {
+            public int Id { get; set; }
+            public DateTime RegisteredAt { get; set; }
+            public double MetricValue { get; set; }
+            public MetricDevice Device { get; set; }
+        }
+        public class MetricDevice
+        {
+            public int Id { get; set; }
+            public Metric Metric { get; set; }
+            public Settlement Settlement { get; set; }
+            public DateTime RegisteredAt { get; set; }
+        }
         // модели
         public class UserLogin
         {
@@ -339,6 +364,8 @@ namespace FarmMetricsClient.Services
         {
             public int Id { get; set; }
             public string Name { get; set; } = string.Empty;
+            public int UserId { get; set; }
+            public int SettlementId { get; set; }
             public string Settlement { get; set; } = string.Empty;
             public List<Culture> Cultures { get; set; } = new();
             public List<Metric> Metrics { get; set; } = new();
