@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using FarmMetricsAPI.Data.MongoDb;
 using FarmMetricsAPI.Models.Mongo;
 using MongoDB.Driver;
+using FarmMetricsAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FarmMetricsAPI.Controllers;
 
@@ -10,10 +12,26 @@ namespace FarmMetricsAPI.Controllers;
 public class FarmController : ControllerBase
 {
     private readonly MongoDbContext _mongoContext;
+    private readonly AppDbContext _context;
 
-    public FarmController(MongoDbContext mongoContext)
+    public FarmController(MongoDbContext mongoContext, AppDbContext context)
     {
         _mongoContext = mongoContext;
+        _context = context;
+    }
+
+    private async Task<List<string>> GetAvailableMetricNames(int settlementId)
+    {
+        return await _context.SettleMetricDevices
+            .Where(d => d.SettlementId == settlementId)
+            .Include(d => d.Metric)
+            .Select(d => d.Metric.Name)
+            .ToListAsync();
+    }
+
+    private bool ValidateMetrics(List<MongoMetric> metrics, List<string> availableMetricNames)
+    {
+        return metrics == null || metrics.All(m => availableMetricNames.Contains(m.Name));
     }
 
     [HttpGet("getall")]
@@ -38,18 +56,27 @@ public class FarmController : ControllerBase
         return Ok(farm);
     }
 
-    //[HttpPost("crea")]
-    //public async Task<IActionResult> Create([FromBody] AOFarm farm)
-    //{
-    //    // Initialize collections if they're null
-    //    farm.Cultures ??= new List<AOCulture>();
-    //    farm.Comments ??= new List<AOComment>();
-    //    farm.Harvests ??= new List<AOHarvest>();
-    //    farm.Metrics ??= new List<AOMetric>();
+    [HttpPost("create")]
+    public async Task<IActionResult> Create([FromBody] MongoFarm farm)
+    {
+        // Get available metrics for the settlement
+        var availableMetricNames = await GetAvailableMetricNames(farm.SettlementId);
 
-    //    await _mongoContext.Farms.InsertOneAsync(farm);
-    //    return Ok(new { Id = farm.Id });
-    //}
+        // Validate that all metrics in the farm are available in the settlement
+        if (!ValidateMetrics(farm.Metrics, availableMetricNames))
+        {
+            return BadRequest($"Some metrics are not available in this settlement. Available metrics: {string.Join(", ", availableMetricNames)}");
+        }
+
+        // Initialize collections if they're null
+        farm.Cultures ??= new List<MongoCulture>();
+        farm.Comments ??= new List<MongoComment>();
+        farm.Harvests ??= new List<MongoHarvest>();
+        farm.Metrics ??= new List<MongoMetric>();
+
+        await _mongoContext.Farms.InsertOneAsync(farm);
+        return Ok(new { Id = farm.Id });
+    }
 
     [HttpPost("change")]
     public async Task<IActionResult> Change([FromQuery] int id, [FromBody] MongoFarm farmChanges)
@@ -60,6 +87,15 @@ public class FarmController : ControllerBase
 
         if (farm == null)
             return NotFound("Farm not found");
+
+        // Get available metrics for the settlement
+        var availableMetricNames = await GetAvailableMetricNames(farmChanges.SettlementId);
+
+        // Validate that all metrics in the farm changes are available in the settlement
+        if (!ValidateMetrics(farmChanges.Metrics, availableMetricNames))
+        {
+            return BadRequest($"Some metrics are not available in this settlement. Available metrics: {string.Join(", ", availableMetricNames)}");
+        }
 
         var update = Builders<MongoFarm>.Update
             .Set(f => f.Name, farmChanges.Name)
@@ -127,6 +163,23 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("available-metrics")]
+    public async Task<IActionResult> GetAvailableMetrics([FromQuery] int settlementId)
+    {
+        var availableMetrics = await _context.SettleMetricDevices
+            .Where(d => d.SettlementId == settlementId)
+            .Include(d => d.Metric)
+            .Select(d => new
+            {
+                d.Metric.Name,
+                d.Metric.MinValue,
+                d.Metric.MaxValue
+            })
+            .ToListAsync();
+
+        return Ok(availableMetrics);
+    }
+
     [HttpGet("bysettlement")]
     public async Task<IActionResult> GetBySettlement([FromQuery] int settlementId)
     {
@@ -135,7 +188,4 @@ public class FarmController : ControllerBase
             .ToListAsync();
         return Ok(farms);
     }
-
-
-    
 }

@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/aida/KursachBeDe/FarmMetricsClient/FarmMetricsClient.csproj": {}
+    "E:\\GitHub\\KursachBeDe\\FarmMetricsClient\\FarmMetricsClient.csproj": {}
   },
   "projects": {
-    "/home/aida/KursachBeDe/FarmMetricsClient/FarmMetricsClient.csproj": {
+    "E:\\GitHub\\KursachBeDe\\FarmMetricsClient\\FarmMetricsClient.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/aida/KursachBeDe/FarmMetricsClient/FarmMetricsClient.csproj",
+        "projectUniqueName": "E:\\GitHub\\KursachBeDe\\FarmMetricsClient\\FarmMetricsClient.csproj",
         "projectName": "FarmMetricsClient",
-        "projectPath": "/home/aida/KursachBeDe/FarmMetricsClient/FarmMetricsClient.csproj",
-        "packagesPath": "/home/aida/.nuget/packages/",
-        "outputPath": "/home/aida/KursachBeDe/FarmMetricsClient/obj/",
+        "projectPath": "E:\\GitHub\\KursachBeDe\\FarmMetricsClient\\FarmMetricsClient.csproj",
+        "packagesPath": "C:\\Users\\TorchPochmak\\.nuget\\packages\\",
+        "outputPath": "E:\\GitHub\\KursachBeDe\\FarmMetricsClient\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/aida/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\TorchPochmak\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -37,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -112,7 +119,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.410/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -10,6 +10,7 @@ using FarmMetricsAPI.Jobs;
 using Quartz;
 using Swashbuckle.AspNetCore;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,11 @@ builder.Services.AddStackExchangeRedisCache(options =>
     var redisConfig = builder.Configuration.GetSection("RedisConfig");
     options.Configuration = redisConfig["ConnectionString"];
     options.InstanceName = redisConfig["InstanceName"];
+});
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var redisConfig = builder.Configuration.GetSection("RedisConfig");
+    return ConnectionMultiplexer.Connect(redisConfig["ConnectionString"]);
 });
 builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 
@@ -54,6 +60,14 @@ builder.Services.AddQuartz(q =>
         .ForJob(cleanerJobKey)
         .WithIdentity("MetricDataCleanerJob-trigger")
         .WithCronSchedule("0 0 0 * * ?")); // Run at midnight every day
+
+    // Add Cache Cleaner Job
+    var cacheCleanerJobKey = new JobKey("CacheCleanerJob");
+    q.AddJob<CacheCleanerJob>(opts => opts.WithIdentity(cacheCleanerJobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(cacheCleanerJobKey)
+        .WithIdentity("CacheCleanerJob-trigger")
+        .WithCronSchedule("0 0 0 * * ?")); // Run once per day at midnight
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

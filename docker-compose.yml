@@ -62,6 +62,8 @@ services:
       - RedisConfig__ConnectionString=redis:6379
     ports:
       - "5148:80"
+    volumes:
+      - ./FarmMetricsAPI/Data/cities.txt:/app/Data/cities.txt
     networks:
       - FarmMetricsAPI-network
 
