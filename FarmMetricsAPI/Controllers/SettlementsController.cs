@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using FarmMetricsAPI.Data;
 using FarmMetricsAPI.Models.Postgres;
 using Microsoft.EntityFrameworkCore;
+using FarmMetricsAPI.Models.Mongo;
+using FarmMetricsAPI.Data.MongoDb;
+using MongoDB.Driver;
 
 namespace FarmMetricsAPI.Controllers
 {
@@ -10,10 +13,12 @@ namespace FarmMetricsAPI.Controllers
     public class SettlementsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly MongoDbContext _mongoDbContext;
 
-        public SettlementsController(AppDbContext context)
+        public SettlementsController(AppDbContext context, MongoDbContext mongoDbContext)
         {
             _context = context;
+            _mongoDbContext = mongoDbContext;
         }
 
         [HttpGet]
@@ -89,7 +94,7 @@ namespace FarmMetricsAPI.Controllers
 
             var hasDevices = await _context.SettleMetricDevices.AnyAsync(d => d.SettlementId == settlementId);
 
-            // var hasFarms = ... проверяем наличие ферм в этом населенном пункте ?
+            var hasFarms = await _mongoDbContext.Farms.Find(f => f.SettlementId == settlementId).AnyAsync();
 
             return Ok(!hasUsers && !hasDevices);
         }
