@@ -44,7 +44,7 @@ public class FarmController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IActionResult> Get([FromQuery] int id)
+    public async Task<IActionResult> Get([FromQuery] string id)
     {
         var farm = await _mongoContext.Farms
             .Find(f => f.Id == id)
@@ -57,108 +57,60 @@ public class FarmController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] MongoFarm farm)
+    public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] int settlementId, [FromQuery] int userId)
     {
-        // Get available metrics for the settlement
-        var availableMetricNames = await GetAvailableMetricNames(farm.SettlementId);
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest("Name is required");
 
-        // Validate that all metrics in the farm are available in the settlement
-        if (!ValidateMetrics(farm.Metrics, availableMetricNames))
+        var farm = new MongoFarm
         {
-            return BadRequest($"Some metrics are not available in this settlement. Available metrics: {string.Join(", ", availableMetricNames)}");
-        }
-
-        // Initialize collections if they're null
-        farm.Cultures ??= new List<MongoCulture>();
-        farm.Comments ??= new List<MongoComment>();
-        farm.Harvests ??= new List<MongoHarvest>();
-        farm.Metrics ??= new List<MongoMetric>();
+            Name = name,
+            SettlementId = settlementId,
+            UserId = userId,
+            Cultures = new List<MongoCulture>(),
+            Comments = new List<MongoComment>(),
+            Harvests = new List<MongoHarvest>(),
+            Metrics = new List<MongoMetric>()
+        };
 
         await _mongoContext.Farms.InsertOneAsync(farm);
         return Ok(new { Id = farm.Id });
     }
 
-    [HttpPost("change")]
-    public async Task<IActionResult> Change([FromQuery] int id, [FromBody] MongoFarm farmChanges)
+    [HttpPost("properties/add")]
+    public async Task<IActionResult> AddProperty([FromQuery] string farmId, [FromQuery] string name, [FromQuery] string value)
     {
-        var farm = await _mongoContext.Farms
-            .Find(f => f.Id == id)
-            .FirstOrDefaultAsync();
+        var protectedProps = new[] { "id", "settlementid", "cultures", "userId", "name", "metrics", "harvests", "comments" };
+        if (protectedProps.Contains(name.ToLower()))
+            return BadRequest($"Cannot add protected property: {name}");
 
-        if (farm == null)
-            return NotFound("Farm not found");
-
-        // Get available metrics for the settlement
-        var availableMetricNames = await GetAvailableMetricNames(farmChanges.SettlementId);
-
-        // Validate that all metrics in the farm changes are available in the settlement
-        if (!ValidateMetrics(farmChanges.Metrics, availableMetricNames))
-        {
-            return BadRequest($"Some metrics are not available in this settlement. Available metrics: {string.Join(", ", availableMetricNames)}");
-        }
-
-        var update = Builders<MongoFarm>.Update
-            .Set(f => f.Name, farmChanges.Name)
-            .Set(f => f.UserId, farmChanges.UserId)
-            .Set(f => f.SettlementId, farmChanges.SettlementId)
-            .Set(f => f.Cultures, farmChanges.Cultures ?? farm.Cultures)
-            .Set(f => f.Metrics, farmChanges.Metrics ?? farm.Metrics)
-            .Set(f => f.Harvests, farmChanges.Harvests ?? farm.Harvests);
-
-        await _mongoContext.Farms.UpdateOneAsync(
-            f => f.Id == id,
+        var update = Builders<MongoFarm>.Update.Set(name, value);
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
             update
         );
 
-        return Ok();
-    }
-
-    [HttpPost("addprop")]
-    public async Task<IActionResult> AddProperty([FromQuery] int id, [FromBody] Dictionary<string, object> properties)
-    {
-        var update = Builders<MongoFarm>.Update;
-        var updates = new List<UpdateDefinition<MongoFarm>>();
-
-        foreach (var prop in properties)
-        {
-            updates.Add(update.Set(prop.Key, prop.Value));
-        }
-
-        if (updates.Count == 0)
-            return BadRequest("No properties to add");
-
-        var combinedUpdate = update.Combine(updates);
-        var result = await _mongoContext.Farms.UpdateOneAsync(
-            f => f.Id == id,
-            combinedUpdate
-        );
-
         if (result.ModifiedCount == 0)
-            return NotFound("Farm not found or no changes made");
+            return NotFound("Farm not found");
 
         return Ok();
     }
 
-    [HttpPost("deleteprop")]
-    public async Task<IActionResult> DeleteProperty([FromQuery] int id, [FromBody] List<string> propertyNames)
+    [HttpDelete("properties/delete")]
+    public async Task<IActionResult> DeleteProperty([FromQuery] string farmId, [FromQuery] string name)
     {
         var protectedProps = new[] { "id", "settlementid", "cultures", "userId", "name", "metrics", "harvests", "comments" };
-        var invalidProps = propertyNames.Select(x => x.ToLower()).Intersect(protectedProps).ToList();
+        if (protectedProps.Contains(name.ToLower()))
+            return BadRequest($"Cannot delete protected property: {name}");
 
-        if (invalidProps.Any())
-            return BadRequest($"Cannot delete protected properties: {string.Join(", ", invalidProps)}");
-
-        var update = Builders<MongoFarm>.Update;
-        var updates = propertyNames.Select(prop => update.Unset(prop));
-        var combinedUpdate = update.Combine(updates);
-
+        var update = Builders<MongoFarm>.Update.Unset(name);
         var result = await _mongoContext.Farms.UpdateOneAsync(
-            f => f.Id == id,
-            combinedUpdate
+            f => f.Id == farmId,
+            update
         );
 
         if (result.ModifiedCount == 0)
-            return NotFound("Farm not found or no changes made");
+            return NotFound("Farm or property not found");
 
         return Ok();
     }
@@ -171,6 +123,7 @@ public class FarmController : ControllerBase
             .Include(d => d.Metric)
             .Select(d => new
             {
+                d.Id,
                 d.Metric.Name,
                 d.Metric.MinValue,
                 d.Metric.MaxValue
@@ -187,5 +140,187 @@ public class FarmController : ControllerBase
             .Find(f => f.SettlementId == settlementId)
             .ToListAsync();
         return Ok(farms);
+    }
+
+    [HttpPost("metrics/add")]
+    public async Task<IActionResult> AddMetric([FromQuery] string farmId, [FromQuery] int deviceId, [FromQuery] double value)
+    {
+        var farm = await _mongoContext.Farms
+            .Find(f => f.Id == farmId)
+            .FirstOrDefaultAsync();
+
+        if (farm == null)
+            return NotFound("Farm not found");
+
+        // Получаем устройство и проверяем его доступность
+        var device = await _context.SettleMetricDevices
+            .Include(d => d.Metric)
+            .FirstOrDefaultAsync(d => d.Id == deviceId && d.SettlementId == farm.SettlementId);
+
+        if (device == null)
+            return BadRequest("Device not found or not available in this settlement");
+
+        var metric = new MongoMetric 
+        { 
+            Name = device.Metric.Name,
+            Value = value,
+            DeviceId = deviceId
+        };
+
+        var update = Builders<MongoFarm>.Update.Push(f => f.Metrics, metric);
+        await _mongoContext.Farms.UpdateOneAsync(f => f.Id == farmId, update);
+
+        return Ok();
+    }
+
+    [HttpDelete("metrics/delete")]
+    public async Task<IActionResult> DeleteMetric([FromQuery] string farmId, [FromQuery] int deviceId)
+    {
+        var update = Builders<MongoFarm>.Update.PullFilter(
+            f => f.Metrics,
+            m => m.DeviceId == deviceId
+        );
+
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm or metric not found");
+
+        return Ok();
+    }
+
+    [HttpPost("harvests/add")]
+    public async Task<IActionResult> AddHarvest([FromQuery] string farmId, [FromQuery] string name, [FromQuery] string info)
+    {
+        var harvest = new MongoHarvest
+        {
+            Name = name,
+            Info = info,
+            RegisteredAt = DateTime.UtcNow
+        };
+
+        var update = Builders<MongoFarm>.Update.Push(f => f.Harvests, harvest);
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm not found");
+
+        return Ok();
+    }
+
+    [HttpDelete("harvests/delete")]
+    public async Task<IActionResult> DeleteHarvest([FromQuery] string farmId, [FromQuery] string harvestId)
+    {
+        var update = Builders<MongoFarm>.Update.PullFilter(
+            f => f.Harvests,
+            h => h.Id == harvestId
+        );
+
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm or harvest not found");
+
+        return Ok();
+    }
+
+    [HttpPost("comments/add")]
+    public async Task<IActionResult> AddComment([FromQuery] string farmId, [FromQuery] string info)
+    {
+        var comment = new MongoComment
+        {
+            Info = info,
+            Date = DateTime.UtcNow
+        };
+
+        var update = Builders<MongoFarm>.Update.Push(f => f.Comments, comment);
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm not found");
+
+        return Ok();
+    }
+
+    [HttpDelete("comments/delete")]
+    public async Task<IActionResult> DeleteComment([FromQuery] string farmId, [FromQuery] string commentId)
+    {
+        var update = Builders<MongoFarm>.Update.PullFilter(
+            f => f.Comments,
+            c => c.Id == commentId
+        );
+
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm or comment not found");
+
+        return Ok();
+    }
+
+    [HttpPost("cultures/add")]
+    public async Task<IActionResult> AddCulture([FromQuery] string farmId, [FromQuery] string name, [FromQuery] int squareMeters)
+    {
+        var culture = new MongoCulture
+        {
+            Name = name,
+            SquareMeters = squareMeters
+        };
+
+        var update = Builders<MongoFarm>.Update.Push(f => f.Cultures, culture);
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm not found");
+
+        return Ok();
+    }
+
+    [HttpDelete("cultures/delete")]
+    public async Task<IActionResult> DeleteCulture([FromQuery] string farmId, [FromQuery] string cultureName)
+    {
+        var update = Builders<MongoFarm>.Update.PullFilter(
+            f => f.Cultures,
+            c => c.Name == cultureName
+        );
+
+        var result = await _mongoContext.Farms.UpdateOneAsync(
+            f => f.Id == farmId,
+            update
+        );
+
+        if (result.ModifiedCount == 0)
+            return NotFound("Farm or culture not found");
+
+        return Ok();
+    }
+
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteFarm([FromQuery] string farmId)
+    {
+        var result = await _mongoContext.Farms.DeleteOneAsync(f => f.Id == farmId);
+
+        if (result.DeletedCount == 0)
+            return NotFound("Farm not found");
+
+        return Ok();
     }
 }

@@ -6,8 +6,8 @@ namespace FarmMetricsAPI.Models.Mongo;
 public class MongoFarm
 {
     [BsonId]
-    [BsonRepresentation(BsonType.Int32)]
-    public int Id { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
     public string Name { get; set; } = string.Empty;
 

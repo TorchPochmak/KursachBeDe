@@ -9,7 +9,9 @@ public class MongoMetric
     [BsonRepresentation(BsonType.Int32)]
     public int Id { get; set; }
 
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     
     public double Value { get; set; }
+
+    public int DeviceId { get; set; }
 } 

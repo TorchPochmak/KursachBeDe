@@ -82,72 +82,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MongoMetric.cs",
-              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
-              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
-              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
-              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T14:30:14.521Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MongoFarm.cs",
-              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
-              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
-              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
-              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T14:28:48.165Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MongoCulture.cs",
-              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
-              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
-              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
-              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T14:29:53.285Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "SettlementsController.cs",
-              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\SettlementsController.cs",
-              "RelativeDocumentMoniker": "FarmMetricsAPI\\Controllers\\SettlementsController.cs",
-              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\SettlementsController.cs",
-              "RelativeToolTip": "FarmMetricsAPI\\Controllers\\SettlementsController.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAwwGwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T13:12:52.595Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FarmController.cs",
-              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\FarmController.cs",
-              "RelativeDocumentMoniker": "FarmMetricsAPI\\Controllers\\FarmController.cs",
-              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\FarmController.cs",
-              "RelativeToolTip": "FarmMetricsAPI\\Controllers\\FarmController.cs",
-              "ViewState": "AgIAAGMAAAAAAAAAAAAewG8AAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T12:37:27.411Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -159,7 +98,60 @@
               "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoComment.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T14:35:29.586Z"
+              "WhenOpened": "2025-05-29T14:35:29.586Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MongoMetric.cs",
+              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
+              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs",
+              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs*",
+              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoMetric.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-29T14:30:14.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MongoFarm.cs",
+              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
+              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
+              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
+              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoFarm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-29T14:28:48.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MongoCulture.cs",
+              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
+              "RelativeDocumentMoniker": "FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
+              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
+              "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoCulture.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-29T14:29:53.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "SettlementsController.cs",
+              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\SettlementsController.cs",
+              "RelativeDocumentMoniker": "FarmMetricsAPI\\Controllers\\SettlementsController.cs",
+              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\SettlementsController.cs",
+              "RelativeToolTip": "FarmMetricsAPI\\Controllers\\SettlementsController.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAwwGwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-29T13:12:52.595Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -171,7 +163,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Controllers\\DevicesController.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAAgwGkAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T13:12:40.218Z"
+              "WhenOpened": "2025-05-29T13:12:40.218Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -183,7 +176,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Data\\cities.txt",
               "ViewState": "AgIAAJAAAAAAAAAAAAAAABAAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-05-29T13:12:01.732Z"
+              "WhenOpened": "2025-05-29T13:12:01.732Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -195,7 +189,21 @@
               "RelativeToolTip": "FarmMetricsAPI\\Controllers\\WatchesController.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAACEAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T12:57:32.676Z"
+              "WhenOpened": "2025-05-29T12:57:32.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FarmController.cs",
+              "DocumentMoniker": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\FarmController.cs",
+              "RelativeDocumentMoniker": "FarmMetricsAPI\\Controllers\\FarmController.cs",
+              "ToolTip": "E:\\GitHub\\KursachBeDe\\FarmMetricsAPI\\Controllers\\FarmController.cs",
+              "RelativeToolTip": "FarmMetricsAPI\\Controllers\\FarmController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-29T12:37:27.411Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -207,7 +215,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Models\\Mongo\\MongoHarvest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T14:35:51.801Z"
+              "WhenOpened": "2025-05-29T14:35:51.801Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -219,7 +228,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Controllers\\AdminController.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAowFIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T13:23:53.618Z"
+              "WhenOpened": "2025-05-29T13:23:53.618Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -231,7 +241,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Controllers\\MetricDataController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T12:57:28.311Z"
+              "WhenOpened": "2025-05-29T12:57:28.311Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -255,7 +266,8 @@
               "RelativeToolTip": "FarmMetricsAPI\\Data\\TestData.cs",
               "ViewState": "AgIAAMcAAAAAAAAAAAAiwAoBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T12:29:43.632Z"
+              "WhenOpened": "2025-05-29T12:29:43.632Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

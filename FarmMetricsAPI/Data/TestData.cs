@@ -11,12 +11,24 @@ public static class TestData
 {
     public static void SeedData(AppDbContext context, MongoDbContext mongoContext)
     {
+        Console.WriteLine("Starting TestData.SeedData...");
+        
         // Clear existing data
-        mongoContext.Farms.DeleteMany(Builders<MongoFarm>.Filter.Empty);
-
+        try 
+        {
+            Console.WriteLine("Clearing existing MongoDB farms...");
+            mongoContext.Farms.DeleteMany(Builders<MongoFarm>.Filter.Empty);
+            Console.WriteLine("Successfully cleared MongoDB farms.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error clearing MongoDB farms: {ex.Message}");
+            throw;
+        }
 
         if (!context.Settlements.Any())
         {
+            Console.WriteLine("Seeding settlements...");
             var citiesPath = Path.Combine("Data", "cities.txt");
             if (File.Exists(citiesPath))
             {
@@ -171,7 +183,7 @@ public static class TestData
             foreach (var device in devices)
             {
                 var metric = metrics.First(m => m.Id == device.MetricId);
-                for (int i = 0; i < 168; i++) // 7 days * 24 hours
+                for (int i = 0; i < 0; i++) // 7 days * 24 hours
                 {
                     context.MetricData.Add(new MetricData 
                     { 
@@ -185,8 +197,58 @@ public static class TestData
         context.SaveChanges();
 
         // Add MongoDB farms for each user
+        var culturePool = new List<(string Name, int MinSquareMeters, int MaxSquareMeters)>
+        {
+            ("Пшеница озимая", 1000, 10000),
+            ("Пшеница яровая", 1000, 8000),
+            ("Кукуруза", 1000, 8000),
+            ("Картофель", 500, 5000),
+            ("Морковь", 500, 3000),
+            ("Свекла сахарная", 500, 4000),
+            ("Свекла кормовая", 500, 4000),
+            ("Подсолнечник", 1000, 7000),
+            ("Соя", 800, 6000),
+            ("Рожь", 1000, 9000),
+            ("Овес", 1000, 8000),
+            ("Ячмень", 1000, 9000),
+            ("Горох", 500, 3000),
+            ("Рапс", 800, 5000),
+            ("Гречиха", 700, 4000)
+        };
+
+        var harvestPool = new List<(string Name, string Info)>
+        {
+            ("Сбор пшеницы", "Отличный урожай, высокое качество зерна"),
+            ("Уборка кукурузы", "Хороший урожай, оптимальная влажность"),
+            ("Сбор картофеля", "Средний урожай, крупные клубни"),
+            ("Уборка свеклы", "Высокая урожайность, хорошая сахаристость"),
+            ("Сбор подсолнечника", "Хороший урожай, высокая масличность"),
+            ("Уборка сои", "Урожайность выше среднего"),
+            ("Сбор ржи", "Стандартный урожай, хорошее качество"),
+            ("Уборка овса", "Урожай соответствует ожиданиям"),
+            ("Сбор ячменя", "Высокий урожай, отличное качество"),
+            ("Уборка гороха", "Средний урожай, хорошее качество"),
+            ("Сбор рапса", "Хорошая урожайность, высокая масличность"),
+            ("Уборка гречихи", "Стабильный урожай")
+        };
+
+        var commentPool = new List<string>
+        {
+            "Проведена диагностика системы орошения, все работает исправно",
+            "Обнаружены признаки заболевания растений, начато применение фунгицидов",
+            "Установлены новые метеодатчики для мониторинга климата",
+            "Завершена подготовка почвы к посевной, внесены основные удобрения",
+            "Проведена инвентаризация техники, требуется ремонт трактора",
+            "Начато строительство нового складского помещения",
+            "Заключен договор на поставку семян на следующий сезон",
+            "Успешно пройдена сертификация органического производства",
+            "Внедрена новая система учета расхода воды",
+            "Проведено обучение персонала по работе с новой техникой"
+        };
+
         foreach (var user in users)
         {
+            Console.WriteLine($"\nProcessing user: {user.Name}");
             // Get available metrics for this settlement
             var settlementDevices = context.SettleMetricDevices
                 .Where(d => d.SettlementId == user.SettlementId)
@@ -199,83 +261,136 @@ public static class TestData
 
             if (!availableMetrics.Any())
             {
-                continue; // Skip if no metrics available
+                Console.WriteLine($"No metrics available for user {user.Name}, skipping...");
+                continue;
             }
 
-            var farms = new List<MongoFarm>
+            try
             {
-                new MongoFarm
+                var farms = new List<MongoFarm>
                 {
-                    Name = $"Ферма №1 - {user.Name}",
-                    UserId = user.Id,
-                    SettlementId = user.SettlementId.Value,
-                    Cultures = new List<MongoCulture>
+                    new MongoFarm
                     {
-                        new MongoCulture { Name = "Пшеница", SquareMeters = random.Next(1000, 10000) },
-                        new MongoCulture    { Name = "Кукуруза", SquareMeters = random.Next(1000, 10000) }
+                        Name = $"Ферма №1 - {user.Name}",
+                        UserId = user.Id,
+                        SettlementId = user.SettlementId.Value,
+                        Cultures = culturePool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(3, 6))
+                            .Select(c => new MongoCulture 
+                            { 
+                                Name = c.Name, 
+                                SquareMeters = random.Next(c.MinSquareMeters, c.MaxSquareMeters + 1)
+                            })
+                            .ToList(),
+                        Metrics = availableMetrics
+                            .OrderBy(x => random.NextDouble())
+                            .Take(Math.Min(3, availableMetrics.Count()))
+                            .Select(m => new MongoMetric 
+                            { 
+                                Name = m.Name,
+                                Value = random.NextDouble() * (m.MaxValue - m.MinValue) + m.MinValue,
+                                DeviceId = settlementDevices.First(d => d.Metric.Name == m.Name).Id
+                            })
+                            .ToList(),
+                        Comments = commentPool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(3, 6))
+                            .Select(c => new MongoComment 
+                            { 
+                                Date = DateTime.UtcNow.AddDays(-random.Next(1, 180)),
+                                Info = c 
+                            })
+                            .OrderByDescending(c => c.Date)
+                            .ToList(),
+                        Harvests = harvestPool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(2, 4))
+                            .Select(h => new MongoHarvest 
+                            { 
+                                RegisteredAt = DateTime.UtcNow.AddMonths(random.Next(-6, -1)),
+                                Name = h.Name,
+                                Info = h.Info
+                            })
+                            .ToList()
                     },
-                    Metrics = availableMetrics
-                        .OrderBy(x => random.NextDouble())
-                        .Take(Math.Min(3, availableMetrics.Count()))
-                        .Select(m => new MongoMetric 
-                        { 
-                            Name = m.Name,
-                            Value = random.NextDouble() * (m.MaxValue - m.MinValue) + m.MinValue
-                        })
-                        .ToList(),
-                    Comments = new List<MongoComment>
+                    new MongoFarm
                     {
-                        new MongoComment { Date = DateTime.UtcNow.AddDays(-2), Info = "Проведен посев пшеницы" },
-                        new MongoComment { Date = DateTime.UtcNow.AddDays(-1), Info = "Внесены удобрения" }
-                    },
-                    Harvests = new List<MongoHarvest>
-                    {
-                        new MongoHarvest 
-                        { 
-                            RegisteredAt = DateTime.UtcNow.AddMonths(-1),
-                            Name = "Озимая пшеница",
-                            Info = "Хороший урожай"
-                        }
+                        Name = $"Ферма №2 - {user.Name}",
+                        UserId = user.Id,
+                        SettlementId = user.SettlementId.Value,
+                        Cultures = culturePool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(3, 6))
+                            .Select(c => new MongoCulture 
+                            { 
+                                Name = c.Name, 
+                                SquareMeters = random.Next(c.MinSquareMeters, c.MaxSquareMeters + 1)
+                            })
+                            .ToList(),
+                        Metrics = availableMetrics
+                            .OrderBy(x => random.NextDouble())
+                            .Take(Math.Min(4, availableMetrics.Count()))
+                            .Select(m => new MongoMetric 
+                            { 
+                                Name = m.Name,
+                                Value = random.NextDouble() * (m.MaxValue - m.MinValue) + m.MinValue,
+                                DeviceId = settlementDevices.First(d => d.Metric.Name == m.Name).Id
+                            })
+                            .ToList(),
+                        Comments = commentPool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(3, 6))
+                            .Select(c => new MongoComment 
+                            { 
+                                Date = DateTime.UtcNow.AddDays(-random.Next(1, 180)),
+                                Info = c 
+                            })
+                            .OrderByDescending(c => c.Date)
+                            .ToList(),
+                        Harvests = harvestPool
+                            .OrderBy(x => random.NextDouble())
+                            .Take(random.Next(2, 4))
+                            .Select(h => new MongoHarvest 
+                            { 
+                                RegisteredAt = DateTime.UtcNow.AddMonths(random.Next(-6, -1)),
+                                Name = h.Name,
+                                Info = h.Info
+                            })
+                            .ToList()
                     }
-                },
-                new MongoFarm
-                {
-                    Name = $"Ферма №2 - {user.Name}",
-                    UserId = user.Id,
-                    SettlementId = user.SettlementId.Value,
-                    Cultures = new List<MongoCulture>
-                    {
-                        new MongoCulture { Name = "Картофель", SquareMeters = random.Next(500, 5000) },
-                        new MongoCulture { Name = "Морковь", SquareMeters = random.Next(500, 5000) },
-                        new MongoCulture { Name = "Свекла", SquareMeters = random.Next(500, 5000) }
-                    },
-                    Metrics = availableMetrics
-                        .OrderBy(x => random.NextDouble())
-                        .Take(Math.Min(4, availableMetrics.Count()))
-                        .Select(m => new MongoMetric 
-                        { 
-                            Name = m.Name,
-                            Value = random.NextDouble() * (m.MaxValue - m.MinValue) + m.MinValue
-                        })
-                        .ToList(),
-                    Comments = new List<MongoComment>
-                    {
-                        new MongoComment { Date = DateTime.UtcNow.AddDays(-3), Info = "Начата посадка картофеля" },
-                        new MongoComment { Date = DateTime.UtcNow.AddDays(-2), Info = "Проведена обработка от вредителей" }
-                    },
-                    Harvests = new List<MongoHarvest>
-                    {
-                        new MongoHarvest
-                        { 
-                            RegisteredAt = DateTime.UtcNow.AddMonths(-2),
-                            Name = "Ранний картофель",
-                            Info = "Средняя урожайность"
-                        }
-                    }
-                }
-            };
+                };
 
-            mongoContext.Farms.InsertMany(farms);
+                Console.WriteLine($"Created farms for user {user.Name}:");
+                foreach (var farm in farms)
+                {
+                    Console.WriteLine($"- Farm: {farm.Name}");
+                    Console.WriteLine($"- Farm: {farm.Id}");
+                    Console.WriteLine($"  Cultures: {farm.Cultures.Count}");
+                    Console.WriteLine($"  Metrics: {farm.Metrics.Count}");
+                    Console.WriteLine($"  Comments: {farm.Comments.Count}");
+                    Console.WriteLine($"  Harvests: {farm.Harvests.Count}");
+                }
+
+                try
+                {
+                    mongoContext.Farms.InsertMany(farms);
+                    Console.WriteLine($"Successfully inserted farms for user {user.Name}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error inserting farms for user {user.Name}: {ex.Message}");
+                    Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating farms for user {user.Name}: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                throw;
+            }
         }
+        Console.WriteLine("\nFinished seeding all farms.");
     }
 }
