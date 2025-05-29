@@ -183,7 +183,7 @@ public static class TestData
             foreach (var device in devices)
             {
                 var metric = metrics.First(m => m.Id == device.MetricId);
-                for (int i = 0; i < 0; i++) // 7 days * 24 hours
+                for (int i = 0; i < 168; i++) // 7 days * 24 hours
                 {
                     context.MetricData.Add(new MetricData 
                     { 

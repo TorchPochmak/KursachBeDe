@@ -77,43 +77,6 @@ public class FarmController : ControllerBase
         return Ok(new { Id = farm.Id });
     }
 
-    [HttpPost("properties/add")]
-    public async Task<IActionResult> AddProperty([FromQuery] string farmId, [FromQuery] string name, [FromQuery] string value)
-    {
-        var protectedProps = new[] { "id", "settlementid", "cultures", "userId", "name", "metrics", "harvests", "comments" };
-        if (protectedProps.Contains(name.ToLower()))
-            return BadRequest($"Cannot add protected property: {name}");
-
-        var update = Builders<MongoFarm>.Update.Set(name, value);
-        var result = await _mongoContext.Farms.UpdateOneAsync(
-            f => f.Id == farmId,
-            update
-        );
-
-        if (result.ModifiedCount == 0)
-            return NotFound("Farm not found");
-
-        return Ok();
-    }
-
-    [HttpDelete("properties/delete")]
-    public async Task<IActionResult> DeleteProperty([FromQuery] string farmId, [FromQuery] string name)
-    {
-        var protectedProps = new[] { "id", "settlementid", "cultures", "userId", "name", "metrics", "harvests", "comments" };
-        if (protectedProps.Contains(name.ToLower()))
-            return BadRequest($"Cannot delete protected property: {name}");
-
-        var update = Builders<MongoFarm>.Update.Unset(name);
-        var result = await _mongoContext.Farms.UpdateOneAsync(
-            f => f.Id == farmId,
-            update
-        );
-
-        if (result.ModifiedCount == 0)
-            return NotFound("Farm or property not found");
-
-        return Ok();
-    }
 
     [HttpGet("available-metrics")]
     public async Task<IActionResult> GetAvailableMetrics([FromQuery] int settlementId)
