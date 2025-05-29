@@ -12,9 +12,17 @@ namespace FarmMetricsAPI.Controllers
     {
         private readonly AppDbContext _context;
 
+        private readonly string BanGuid = GenerateSeededGuid(29052025).ToString();
         public AdminController(AppDbContext context)
         {
             _context = context;
+        }
+        public static Guid GenerateSeededGuid(int seed)
+        {
+            var r = new Random(seed);
+            var guid = new byte[16];
+            r.NextBytes(guid);
+            return new Guid(guid);
         }
 
         [HttpGet("users")]
@@ -42,7 +50,7 @@ namespace FarmMetricsAPI.Controllers
                     u.Phone,
                     Role = u.Role.Name,
                     Settlement = u.Settlement.Name,
-                    IsBanned = u.Name.StartsWith("[BANNED]")
+                    IsBanned = u.Name.StartsWith($"[{BanGuid}]")
                 })
                 .ToListAsync();
 
@@ -58,9 +66,9 @@ namespace FarmMetricsAPI.Controllers
                 return NotFound();
             }
 
-            if (!user.Name.StartsWith("[BANNED]"))
+            if (!user.Name.StartsWith($"[{BanGuid}]"))
             {
-                user.Name = $"[BANNED] {user.Name}";
+                user.Name = $"[{BanGuid}] {user.Name}";
                 await _context.SaveChangesAsync();
             }
 
@@ -76,9 +84,9 @@ namespace FarmMetricsAPI.Controllers
                 return NotFound();
             }
 
-            if (user.Name.StartsWith("[BANNED]"))
+            if (user.Name.StartsWith($"[{BanGuid}]"))
             {
-                user.Name = user.Name.Replace("[BANNED] ", "");
+                user.Name = user.Name.Replace($"[{BanGuid}] ", "");
                 await _context.SaveChangesAsync();
             }
 
