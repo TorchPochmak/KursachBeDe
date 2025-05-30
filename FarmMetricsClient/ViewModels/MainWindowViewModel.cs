@@ -58,7 +58,7 @@ namespace FarmMetricsClient.ViewModels
         {
             try
             {
-                LoginStatus = ""; // Сбрасываем статус
+                LoginStatus = "";
 
                 var response = await _apiClient.LoginAsync(Email, Password);
 
@@ -68,7 +68,6 @@ namespace FarmMetricsClient.ViewModels
                     return;
                 }
 
-                // Успешная авторизация
                 if (!string.IsNullOrEmpty(response.Token))
                 {
                     UserId = response.UserId;
@@ -76,7 +75,6 @@ namespace FarmMetricsClient.ViewModels
                     return;
                 }
 
-                // Обработка разных типов ошибок
                 if (response.IsBanned)
                 {
                     LoginStatus = response.BanMessage;

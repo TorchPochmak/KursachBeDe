@@ -10,7 +10,6 @@ using static FarmMetricsClient.Services.ApiClient;
 
 namespace FarmMetricsClient.ViewModels.User.Pages
 {
-    // RelayCommand для простых команд
     public class RelayCommand : ICommand
     {
         private readonly Action<object?> _execute;
@@ -24,7 +23,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         public void Execute(object? parameter) => _execute(parameter);
         public event EventHandler? CanExecuteChanged { add { } remove { } }
     }
-    // AsyncRelayCommand для асинхронных операций
     public class AsyncRelayCommand : ICommand
     {
         private readonly Func<object?, Task> _execute;
@@ -44,7 +42,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         public Farm Farm { get; }
         private readonly ApiClient _apiClient;
 
-        // Модель для отображения устройств в ComboBox
         public class DeviceDisplayModel
         {
             public int Id { get; set; }
@@ -55,7 +52,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             public override string ToString() => Name;
         }
 
-        // Культуры
         private bool _isAddCultureVisible;
         public bool IsAddCultureVisible
         {
@@ -65,7 +61,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         public string NewCultureName { get; set; } = "";
         public string NewCultureArea { get; set; } = "";
 
-        // Метрики
         private bool _isAddMetricVisible;
         public bool IsAddMetricVisible
         {
@@ -80,8 +75,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             set { _selectedDevice = value; OnPropertyChanged(); }
         }
         public string NewMetricValue { get; set; } = "";
-
-        // Сборы урожая
         private bool _isAddHarvestVisible;
         public bool IsAddHarvestVisible
         {
@@ -91,24 +84,19 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         public string NewHarvestName { get; set; } = "";
         public string NewHarvestInfo { get; set; } = "";
 
-        // Комментарии
         public string NewComment { get; set; } = "";
 
-        // Команды
         public ICommand ShowAddCultureCommand { get; }
         public ICommand AddCultureCommand { get; }
         public ICommand CancelAddCultureCommand { get; }
         public ICommand DeleteCultureCommand { get; }
-
         public ICommand ShowAddMetricCommand { get; }
         public ICommand AddMetricCommand { get; }
         public ICommand CancelAddMetricCommand { get; }
         public ICommand DeleteMetricCommand { get; }
-
         public ICommand ShowAddHarvestCommand { get; }
         public ICommand AddHarvestCommand { get; }
         public ICommand CancelAddHarvestCommand { get; }
-
         public ICommand AddCommentCommand { get; }
 
         public event Action? FarmChanged;
@@ -119,8 +107,6 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             _apiClient = apiClient;
             FarmChanged = farmChangedCallback;
 
-
-            // Инициализация команд
             ShowAddCultureCommand = new RelayCommand(_ => IsAddCultureVisible = true);
             CancelAddCultureCommand = new RelayCommand(_ =>
             {
@@ -161,7 +147,7 @@ namespace FarmMetricsClient.ViewModels.User.Pages
             var result = await _apiClient.AddCultureAsync(Farm.Id, NewCultureName, area);
             if (result)
             {
-                FarmChanged?.Invoke(); // Вызовем обновление всех ферм
+                FarmChanged?.Invoke();
             }
         }
 
@@ -247,14 +233,11 @@ namespace FarmMetricsClient.ViewModels.User.Pages
         }
     }
 
-    // Основная VM для списка ферм
     public class UserFarmsViewModel : INotifyPropertyChanged
     {
         private readonly int _userId;
         private readonly ApiClient _apiClient;
         public ObservableCollection<FarmViewModel> Farms { get; set; } = new();
-
-        // Для добавления фермы
         public ObservableCollection<ApiClient.Settlement> Settlements { get; set; } = new();
         private ApiClient.Settlement _selectedSettlement;
         public ApiClient.Settlement SelectedSettlement
