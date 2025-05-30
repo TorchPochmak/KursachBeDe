@@ -31,6 +31,11 @@ namespace FarmMetricsAPI.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Аутентификация пользователя и выдача JWT токена
+        /// </summary>
+        /// <param name="login">Данные для входа (email и пароль)</param>
+        /// <returns>JWT токен и информация о пользователе</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLogin login)
         {
@@ -95,6 +100,11 @@ namespace FarmMetricsAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Регистрация нового пользователя
+        /// </summary>
+        /// <param name="register">Данные для регистрации нового пользователя</param>
+        /// <returns>Сообщение об успешной регистрации</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegister register)
         {
@@ -124,6 +134,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok(new { Message = "User registered successfully" });
         }
 
+        /// <summary>
+        /// Получение информации о пользователе по его идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <returns>Детальная информация о пользователе</returns>
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -149,6 +164,12 @@ namespace FarmMetricsAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Обновление данных пользователя
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <param name="request">Новые данные пользователя</param>
+        /// <returns>Сообщение об успешном обновлении</returns>
         [HttpPut("user/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateRequest request)
         {
@@ -172,6 +193,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok(new { Message = "User updated successfully" });
         }
 
+        /// <summary>
+        /// Удаление пользователя
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <returns>Сообщение об успешном удалении</returns>
         [HttpDelete("user/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

@@ -15,6 +15,10 @@ namespace FarmMetricsAPI.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Получает список всех типов метрик с их параметрами
+        /// </summary>
+        /// <returns>Список метрик с минимальными и максимальными значениями</returns>
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {

@@ -21,6 +21,10 @@ namespace FarmMetricsAPI.Controllers
             _mongoDbContext = mongoDbContext;
         }
 
+        /// <summary>
+        /// Получает список всех поселений
+        /// </summary>
+        /// <returns>Список поселений с их идентификаторами и названиями</returns>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -35,6 +39,12 @@ namespace FarmMetricsAPI.Controllers
             return Ok(settlements);
         }
 
+        /// <summary>
+        /// Обновляет привязку пользователя к поселению
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="request">Данные о новом поселении</param>
+        /// <returns>Результат обновления</returns>
         [HttpPut("user/{userId}/settlement")]
         public async Task<IActionResult> UpdateUserSettlement(int userId, [FromBody] UpdateSettlementRequest request)
         {
@@ -56,6 +66,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Удаляет привязку пользователя к поселению
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Результат удаления привязки</returns>
         [HttpDelete("user/{userId}/settlement")]
         public async Task<IActionResult> RemoveUserSettlement(int userId)
         {
@@ -70,6 +85,12 @@ namespace FarmMetricsAPI.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Создает новое поселение
+        /// </summary>
+        /// <param name="request">Данные нового поселения</param>
+        /// <returns>Информация о созданном поселении</returns>
         [HttpPost]
         public async Task<IActionResult> AddSettlement([FromBody] AddSettlementRequest request)
         {
@@ -87,6 +108,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok(new { settlement.Id, settlement.Name });
         }
 
+        /// <summary>
+        /// Проверяет возможность удаления поселения
+        /// </summary>
+        /// <param name="settlementId">Идентификатор поселения</param>
+        /// <returns>Результат проверки возможности удаления</returns>
         [HttpGet("{settlementId}/can-delete")]
         public async Task<IActionResult> CanDeleteSettlement(int settlementId)
         {
@@ -98,6 +124,12 @@ namespace FarmMetricsAPI.Controllers
 
             return Ok(!hasUsers && !hasDevices);
         }
+
+        /// <summary>
+        /// Удаляет поселение
+        /// </summary>
+        /// <param name="id">Идентификатор поселения</param>
+        /// <returns>Результат удаления</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -119,11 +151,11 @@ namespace FarmMetricsAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
         public class AddSettlementRequest
         {
             public string Name { get; set; } = string.Empty;
         }
-
 
         public class UpdateSettlementRequest
         {

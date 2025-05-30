@@ -28,6 +28,11 @@ public class DevicesController : ControllerBase
         _redis = redis;
     }
 
+    /// <summary>
+    /// Получает список всех устройств в указанном поселении
+    /// </summary>
+    /// <param name="settlementId">Идентификатор поселения</param>
+    /// <returns>Список устройств с информацией о метриках</returns>
     [HttpGet("getall")]
     public async Task<IActionResult> GetAll([FromQuery] int settlementId)
     {
@@ -51,6 +56,12 @@ public class DevicesController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Поиск устройств по параметрам
+    /// </summary>
+    /// <param name="settlementId">Идентификатор поселения (опционально)</param>
+    /// <param name="metricId">Идентификатор метрики (опционально)</param>
+    /// <returns>Список устройств, соответствующих критериям поиска</returns>
     [HttpGet("search")]
     public async Task<IActionResult> Search(
         [FromQuery] int? settlementId = null,
@@ -91,6 +102,11 @@ public class DevicesController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Получает среднее значение метрики устройства за последние 7 дней
+    /// </summary>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Статистика по метрике устройства</returns>
     [HttpGet("average")]
     public async Task<IActionResult> GetDeviceAverage([FromQuery] int deviceId)
     {
@@ -144,6 +160,11 @@ public class DevicesController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Удаляет устройство и связанные с ним данные
+    /// </summary>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Результат операции удаления</returns>
     [HttpDelete("delete")]
     public async Task<IActionResult> Delete([FromQuery] int deviceId)
     {
@@ -184,6 +205,11 @@ public class DevicesController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Создает новое устройство измерения
+    /// </summary>
+    /// <param name="device">Данные нового устройства</param>
+    /// <returns>Созданное устройство</returns>
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] SettleMetricDevice device)
     {

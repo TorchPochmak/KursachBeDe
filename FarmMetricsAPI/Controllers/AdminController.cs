@@ -25,6 +25,11 @@ namespace FarmMetricsAPI.Controllers
             return new Guid(guid);
         }
 
+        /// <summary>
+        /// Получает список всех пользователей с возможностью фильтрации
+        /// </summary>
+        /// <param name="filter">Строка фильтрации (поиск по имени, email или телефону)</param>
+        /// <returns>Отфильтрованный список пользователей</returns>
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers(string filter = "")
         {
@@ -57,6 +62,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok(users);
         }
 
+        /// <summary>
+        /// Блокирует пользователя
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Результат операции блокировки</returns>
         [HttpPost("users/{userId}/ban")]
         public async Task<IActionResult> BanUser(int userId)
         {
@@ -75,6 +85,11 @@ namespace FarmMetricsAPI.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Разблокирует пользователя
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Результат операции разблокировки</returns>
         [HttpPost("users/{userId}/unban")]
         public async Task<IActionResult> UnbanUser(int userId)
         {

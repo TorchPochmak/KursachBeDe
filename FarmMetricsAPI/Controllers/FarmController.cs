@@ -34,6 +34,11 @@ public class FarmController : ControllerBase
         return metrics == null || metrics.All(m => availableMetricNames.Contains(m.Name));
     }
 
+    /// <summary>
+    /// Получает список всех ферм, принадлежащих указанному пользователю
+    /// </summary>
+    /// <param name="userId">Идентификатор пользователя</param>
+    /// <returns>Список ферм пользователя</returns>
     [HttpGet("getall")]
     public async Task<IActionResult> GetAll([FromQuery] int userId)
     {
@@ -43,6 +48,11 @@ public class FarmController : ControllerBase
         return Ok(farms);
     }
 
+    /// <summary>
+    /// Получает информацию о конкретной ферме по её идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор фермы</param>
+    /// <returns>Детальная информация о ферме</returns>
     [HttpGet("get")]
     public async Task<IActionResult> Get([FromQuery] string id)
     {
@@ -56,6 +66,13 @@ public class FarmController : ControllerBase
         return Ok(farm);
     }
 
+    /// <summary>
+    /// Создает новую ферму
+    /// </summary>
+    /// <param name="name">Название фермы</param>
+    /// <param name="settlementId">Идентификатор поселения</param>
+    /// <param name="userId">Идентификатор пользователя</param>
+    /// <returns>Идентификатор созданной фермы</returns>
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromQuery] string name, [FromQuery] int settlementId, [FromQuery] int userId)
     {
@@ -77,7 +94,11 @@ public class FarmController : ControllerBase
         return Ok(new { Id = farm.Id });
     }
 
-
+    /// <summary>
+    /// Получает список доступных метрик для указанного поселения
+    /// </summary>
+    /// <param name="settlementId">Идентификатор поселения</param>
+    /// <returns>Список доступных метрик с их параметрами</returns>
     [HttpGet("available-metrics")]
     public async Task<IActionResult> GetAvailableMetrics([FromQuery] int settlementId)
     {
@@ -96,6 +117,11 @@ public class FarmController : ControllerBase
         return Ok(availableMetrics);
     }
 
+    /// <summary>
+    /// Получает список всех ферм в указанном поселении
+    /// </summary>
+    /// <param name="settlementId">Идентификатор поселения</param>
+    /// <returns>Список ферм в поселении</returns>
     [HttpGet("bysettlement")]
     public async Task<IActionResult> GetBySettlement([FromQuery] int settlementId)
     {
@@ -105,6 +131,13 @@ public class FarmController : ControllerBase
         return Ok(farms);
     }
 
+    /// <summary>
+    /// Добавляет новое измерение метрики для фермы
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="deviceId">Идентификатор устройства измерения</param>
+    /// <param name="value">Значение метрики</param>
+    /// <returns>Результат операции</returns>
     [HttpPost("metrics/add")]
     public async Task<IActionResult> AddMetric([FromQuery] string farmId, [FromQuery] int deviceId, [FromQuery] double value)
     {
@@ -136,6 +169,12 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Удаляет все измерения метрики с указанного устройства для фермы
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="deviceId">Идентификатор устройства измерения</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("metrics/delete")]
     public async Task<IActionResult> DeleteMetric([FromQuery] string farmId, [FromQuery] int deviceId)
     {
@@ -155,6 +194,13 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Добавляет новую запись об урожае для фермы
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="name">Название урожая</param>
+    /// <param name="info">Дополнительная информация об урожае</param>
+    /// <returns>Результат операции</returns>
     [HttpPost("harvests/add")]
     public async Task<IActionResult> AddHarvest([FromQuery] string farmId, [FromQuery] string name, [FromQuery] string info)
     {
@@ -177,6 +223,12 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Удаляет запись об урожае
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="harvestId">Идентификатор записи об урожае</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("harvests/delete")]
     public async Task<IActionResult> DeleteHarvest([FromQuery] string farmId, [FromQuery] string harvestId)
     {
@@ -196,6 +248,12 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Добавляет новый комментарий к ферме
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="info">Текст комментария</param>
+    /// <returns>Результат операции</returns>
     [HttpPost("comments/add")]
     public async Task<IActionResult> AddComment([FromQuery] string farmId, [FromQuery] string info)
     {
@@ -217,6 +275,12 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Удаляет комментарий к ферме
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="commentId">Идентификатор комментария</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("comments/delete")]
     public async Task<IActionResult> DeleteComment([FromQuery] string farmId, [FromQuery] string commentId)
     {
@@ -236,6 +300,13 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Добавляет новую культуру на ферму
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="name">Название культуры</param>
+    /// <param name="squareMeters">Площадь посадки в квадратных метрах</param>
+    /// <returns>Результат операции</returns>
     [HttpPost("cultures/add")]
     public async Task<IActionResult> AddCulture([FromQuery] string farmId, [FromQuery] string name, [FromQuery] int squareMeters)
     {
@@ -257,6 +328,12 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Удаляет культуру с фермы
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <param name="cultureName">Название культуры</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("cultures/delete")]
     public async Task<IActionResult> DeleteCulture([FromQuery] string farmId, [FromQuery] string cultureName)
     {
@@ -276,6 +353,11 @@ public class FarmController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Удаляет ферму и все связанные с ней данные
+    /// </summary>
+    /// <param name="farmId">Идентификатор фермы</param>
+    /// <returns>Результат операции</returns>
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteFarm([FromQuery] string farmId)
     {
