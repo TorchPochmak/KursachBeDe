@@ -10,7 +10,14 @@ namespace FarmMetricsClient.Services
     public class ApiClient
     {
         private readonly HttpClient _httpClient;
-
+        private readonly string BanGuid = GenerateSeededGuid(29052025).ToString();
+        public static Guid GenerateSeededGuid(int seed)
+        {
+            var r = new Random(seed);
+            var guid = new byte[16];
+            r.NextBytes(guid);
+            return new Guid(guid);
+        }
         public ApiClient(string baseUrl)
         {
             _httpClient = new HttpClient
@@ -77,7 +84,7 @@ namespace FarmMetricsClient.Services
                 var content = await response.Content.ReadAsStringAsync();
                 var profile = JsonConvert.DeserializeObject<UserProfile>(content);
 
-                if (profile != null && profile.Name?.StartsWith("[BANNED]") == true)
+                if (profile != null && profile.Name?.StartsWith($"[{BanGuid}]") == true)
                 {
                     profile.IsBanned = true;
                 }

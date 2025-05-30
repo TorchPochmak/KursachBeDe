@@ -18,7 +18,7 @@ public class CacheCleanerJob : IJob
         var db = _redis.GetDatabase();
         var server = _redis.GetServer(_redis.GetEndPoints().First());
         
-        // Get all keys matching our pattern
+
         var keys = server.Keys(pattern: "device_avg:*").ToList();
         
         if (keys.Count > MAX_CACHE_ENTRIES)

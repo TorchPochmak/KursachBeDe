@@ -13,7 +13,7 @@ public static class TestData
     {
         Console.WriteLine("Starting TestData.SeedData...");
         
-        // Clear existing data
+
         try 
         {
             Console.WriteLine("Clearing existing MongoDB farms...");
@@ -52,21 +52,21 @@ public static class TestData
             }
         }
 
-        // Add roles
+
         var adminRole = new Role { Name = "Admin" };
         var userRole = new Role { Name = "User" };
         context.Roles.AddRange(adminRole, userRole);
         context.SaveChanges();
 
         Random random = new Random();
-        // Get random settlements for users
+
         var allSettlements = context.Settlements.ToList();
         var randomSettlements = allSettlements
             .OrderBy(x => random.Next())
             .Take(5)
             .ToList();
 
-        // Add users
+
         var users = new List<User>
         {
             new User 
@@ -113,7 +113,7 @@ public static class TestData
         context.Users.AddRange(users);
         context.SaveChanges();
 
-        // Add metrics
+
         var metrics = new List<Metric>
         {
             new Metric { Name = "Температура воздуха (°C)", MinValue = -40, MaxValue = 50 },
@@ -143,20 +143,20 @@ public static class TestData
             {
                 new SettleMetricDevice 
                 { 
-                    MetricId = metrics[0].Id, // Температура воздуха
+                    MetricId = metrics[0].Id,
                     SettlementId = settlement.Id,
                     RegisteredAt = DateTime.UtcNow
                 },
                 new SettleMetricDevice 
                 { 
-                    MetricId = metrics[1].Id, // Влажность воздуха
+                    MetricId = metrics[1].Id,
                     SettlementId = settlement.Id,
                     RegisteredAt = DateTime.UtcNow
                 }
             };
             
-            var additionalMetricsCount = random.Next(1, 6); // 1 to 5 additional metrics
-            var availableMetrics = metrics.Skip(2).ToList(); // Skip temperature and humidity
+            var additionalMetricsCount = random.Next(1, 6); 
+            var availableMetrics = metrics.Skip(2).ToList(); 
             
             var selectedMetrics = availableMetrics
                 .OrderBy(x => random.NextDouble())
@@ -174,21 +174,21 @@ public static class TestData
             }
 
             context.SettleMetricDevices.AddRange(devices);
-            context.SaveChanges(); // Save devices first to get their IDs
+            context.SaveChanges(); 
 
-            // Add metric data for each device
+
             var startDate = DateTime.UtcNow.Date.AddDays(-7).AddHours(DateTime.UtcNow.Hour);
-            startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0, DateTimeKind.Utc); // Reset minutes and seconds to 00:00
+            startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0, DateTimeKind.Utc); 
 
             foreach (var device in devices)
             {
                 var metric = metrics.First(m => m.Id == device.MetricId);
-                for (int i = 0; i < 168; i++) // 7 days * 24 hours
+                for (int i = 0; i < 168; i++) // 7 * 24 
                 {
                     context.MetricData.Add(new MetricData 
                     { 
                         SettleMetricDeviceId = device.Id,
-                        RegisteredAt = startDate.AddHours(i), // This will maintain 00:00 minutes and seconds
+                        RegisteredAt = startDate.AddHours(i), 
                         MetricValue = random.NextDouble() * (metric.MaxValue - metric.MinValue) + metric.MinValue
                     });
                 }
@@ -196,7 +196,7 @@ public static class TestData
         }
         context.SaveChanges();
 
-        // Add MongoDB farms for each user
+
         var culturePool = new List<(string Name, int MinSquareMeters, int MaxSquareMeters)>
         {
             ("Пшеница озимая", 1000, 10000),
@@ -249,7 +249,6 @@ public static class TestData
         foreach (var user in users)
         {
             Console.WriteLine($"\nProcessing user: {user.Name}");
-            // Get available metrics for this settlement
             var settlementDevices = context.SettleMetricDevices
                 .Where(d => d.SettlementId == user.SettlementId)
                 .Include(d => d.Metric)

@@ -8,7 +8,7 @@ public class MetricDataCleanerJob : IJob
 {
     private readonly AppDbContext _context;
     private readonly ILogger<MetricDataCleanerJob> _logger;
-    private const int RetentionDays = 30; // Keep data for 30 days
+    private const int RetentionDays = 30; 
 
     public MetricDataCleanerJob(AppDbContext context, ILogger<MetricDataCleanerJob> logger)
     {
@@ -22,7 +22,7 @@ public class MetricDataCleanerJob : IJob
         {
             var cutoffDate = DateTime.Now.AddDays(-RetentionDays).Date;
             
-            // Delete old metric data
+
             var deletedCount = await _context.MetricData
                 .Where(md => md.RegisteredAt < cutoffDate)
                 .ExecuteDeleteAsync();

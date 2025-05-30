@@ -14,12 +14,11 @@ using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure MongoDB
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbConfig"));
 builder.Services.AddSingleton<MongoDbContext>();
 
-// Configure Redis
+
 builder.Services.Configure<RedisSettings>(
     builder.Configuration.GetSection("RedisConfig"));
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -42,32 +41,30 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
-// Configure Quartz
+
 builder.Services.AddQuartz(q =>
 {
-    // Add MetricData Job
+
     var addMetricJobKey = new JobKey("AddMetricDataJob");
     q.AddJob<AddMetricDataJob>(opts => opts.WithIdentity(addMetricJobKey));
     q.AddTrigger(opts => opts
         .ForJob(addMetricJobKey)
         .WithIdentity("AddMetricDataJob-trigger")
-        .WithCronSchedule("0 0 * * * ?")); // Run every hour at minute 0
+        .WithCronSchedule("0 0 * * * ?")); 
 
-    // Add Cleaner Job
     var cleanerJobKey = new JobKey("MetricDataCleanerJob");
     q.AddJob<MetricDataCleanerJob>(opts => opts.WithIdentity(cleanerJobKey));
     q.AddTrigger(opts => opts
         .ForJob(cleanerJobKey)
         .WithIdentity("MetricDataCleanerJob-trigger")
-        .WithCronSchedule("0 0 0 * * ?")); // Run at midnight every day
+        .WithCronSchedule("0 0 0 * * ?")); 
 
-    // Add Cache Cleaner Job
     var cacheCleanerJobKey = new JobKey("CacheCleanerJob");
     q.AddJob<CacheCleanerJob>(opts => opts.WithIdentity(cacheCleanerJobKey));
     q.AddTrigger(opts => opts
         .ForJob(cacheCleanerJobKey)
         .WithIdentity("CacheCleanerJob-trigger")
-        .WithCronSchedule("0 0 0 * * ?")); // Run once per day at midnight
+        .WithCronSchedule("0 0 0 * * ?")); 
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

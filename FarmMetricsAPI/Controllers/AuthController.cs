@@ -16,6 +16,15 @@ namespace FarmMetricsAPI.Controllers
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
 
+        private readonly string BanGuid = GenerateSeededGuid(29052025).ToString();
+        public static Guid GenerateSeededGuid(int seed)
+        {
+            var r = new Random(seed);
+            var guid = new byte[16];
+            r.NextBytes(guid);
+            return new Guid(guid);
+        }
+
         public AuthController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
@@ -47,7 +56,7 @@ namespace FarmMetricsAPI.Controllers
                 });
             }
 
-            if (user.Name?.StartsWith("[BANNED]") == true)
+            if (user.Name?.StartsWith($"[{BanGuid}]") == true)
             {
                 return Unauthorized(new
                 {

@@ -17,7 +17,7 @@ public class AddMetricDataJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        var settleMetricDevices = await _context.SettleMetricDevices.ToListAsync();
+        var settleMetricDevices = await _context.SettleMetricDevices.Include(x => x.Metric).ToListAsync();
         var currentTime = DateTime.Now;
         // Round to the current hour
         var roundedTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 
@@ -33,7 +33,7 @@ public class AddMetricDataJob : IJob
                 {
                     SettleMetricDeviceId = device.Id,
                     RegisteredAt = roundedTime,
-                    MetricValue = GetMetricValue(device.MetricId)
+                    MetricValue = GetMetricValue(device.Metric)
                 };
                 await _context.MetricData.AddAsync(metricData);
             }
@@ -41,10 +41,8 @@ public class AddMetricDataJob : IJob
         await _context.SaveChangesAsync();
     }
 
-    private double GetMetricValue(int metricId)
+    private double GetMetricValue(Metric metric)
     {
-        // Generate random values based on metric type
-        // You can customize this based on your metric types
-        return _random.NextDouble() * 100; // Example: random value between 0 and 100
+        return metric.MinValue + (_random.NextDouble() * (metric.MaxValue - metric.MinValue));
     }
 } 

@@ -101,7 +101,7 @@ public class DevicesController : ControllerBase
         if (device == null)
             return NotFound("Device not found");
 
-        // Try to get from cache first
+
         var db = _redis.GetDatabase();
         var today = DateTime.UtcNow.Date;
         var cacheKey = $"device_avg:{deviceId}:{today:yyyy-MM-dd}";
@@ -112,7 +112,7 @@ public class DevicesController : ControllerBase
             return Ok(JsonSerializer.Deserialize<DeviceAverageDto>(cachedValue));
         }
 
-        // If not in cache, calculate
+
         var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
         var metricData = await _dbContext.MetricData
             .Where(md => md.SettleMetricDeviceId == deviceId && 
@@ -134,7 +134,7 @@ public class DevicesController : ControllerBase
             PeriodEnd = DateTime.UtcNow
         };
 
-        // Cache the result for 1 hour
+
         await db.StringSetAsync(
             cacheKey,
             JsonSerializer.Serialize(result),
@@ -154,7 +154,7 @@ public class DevicesController : ControllerBase
         if (device == null)
             return NotFound("Device not found");
 
-        // Check if this is the last device for this metric in this settlement
+
         var isLastDeviceForMetric = !await _dbContext.SettleMetricDevices
             .AnyAsync(d => d.Id != deviceId && 
                           d.SettlementId == device.SettlementId && 
@@ -162,7 +162,7 @@ public class DevicesController : ControllerBase
 
         if (isLastDeviceForMetric)
         {
-            // If this is the last device, we need to remove this metric from all farms in this settlement
+
             var filter = Builders<MongoFarm>.Filter.Eq(f => f.SettlementId, device.SettlementId);
             var update = Builders<MongoFarm>.Update.PullFilter(
                 f => f.Metrics,
@@ -172,7 +172,7 @@ public class DevicesController : ControllerBase
             await _mongoContext.Farms.UpdateManyAsync(filter, update);
         }
 
-        // Delete the device from PostgreSQL (this will cascade delete related metric data)
+
         _dbContext.SettleMetricDevices.Remove(device);
         await _dbContext.SaveChangesAsync();
 

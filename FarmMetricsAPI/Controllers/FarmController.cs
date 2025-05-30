@@ -115,7 +115,7 @@ public class FarmController : ControllerBase
         if (farm == null)
             return NotFound("Farm not found");
 
-        // Получаем устройство и проверяем его доступность
+
         var device = await _context.SettleMetricDevices
             .Include(d => d.Metric)
             .FirstOrDefaultAsync(d => d.Id == deviceId && d.SettlementId == farm.SettlementId);
