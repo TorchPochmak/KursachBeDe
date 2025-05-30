@@ -51,11 +51,6 @@
                                         FontSize="16" />
 
                                     <TextBlock FontSize="16">
-                                        <Run Text="Роль: " FontWeight="Bold" />
-                                        <Run Text="{Binding Role}" />
-                                    </TextBlock>
-
-                                    <TextBlock FontSize="16">
                                         <Run Text="Населенный пункт: " FontWeight="Bold" />
                                         <Run Text="{Binding Settlement}" />
                                     </TextBlock>

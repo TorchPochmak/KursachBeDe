@@ -6,9 +6,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Верхняя панель -->
         <Border Background="#AAE8F5E9" CornerRadius="10" Margin="10">
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="10">
                 <Button Command="{Binding GoBackCommand}" Width="40" Height="40"
@@ -21,7 +23,38 @@
             </StackPanel>
         </Border>
 
-        <Grid Grid.Row="1" Margin="10">
+        <!-- Фильтры: населённый пункт и метрика -->
+        <StackPanel Orientation="Horizontal" Spacing="20" Margin="10,0,10,10" Grid.Row="1">
+            <StackPanel>
+                <TextBlock Text="Населённый пункт:" FontSize="14" />
+                <ComboBox ItemsSource="{Binding Settlements}"
+                          SelectedItem="{Binding SelectedSettlement}"
+                          Width="200"
+                          Margin="0,5,0,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Метрика:" FontSize="14" />
+                <ComboBox ItemsSource="{Binding AllMetrics}"
+                          SelectedItem="{Binding SelectedMetric}"
+                          Width="200"
+                          Margin="0,5,0,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Список метрик -->
+        <Grid Grid.Row="2" Margin="10">
             <ScrollViewer IsVisible="{Binding HasSettlement}">
                 <ItemsControl ItemsSource="{Binding Metrics}">
                     <ItemsControl.ItemTemplate>
@@ -35,8 +68,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel>
-                                        <TextBlock Text="{Binding Device.Metric.Name}"
-                                            FontWeight="Bold" />
+                                        <TextBlock Text="{Binding DeviceName}" FontWeight="Bold" />
                                         <TextBlock
                                             Text="{Binding RegisteredAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
                                             FontSize="12" Foreground="Gray" />
@@ -62,7 +94,8 @@
             </Border>
         </Grid>
 
-        <Border Grid.Row="1" Background="#80000000" IsVisible="{Binding IsLoading}">
+        <!-- Лоадер -->
+        <Border Grid.Row="2" Background="#80000000" IsVisible="{Binding IsLoading}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ProgressBar IsIndeterminate="True" Width="200" Height="10" Margin="0,0,0,10" />
                 <TextBlock Text="Загрузка данных..." Foreground="White" HorizontalAlignment="Center" />

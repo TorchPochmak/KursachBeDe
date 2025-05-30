@@ -72,8 +72,11 @@ namespace FarmMetricsClient.ViewModels.Admin.Pages
             try
             {
                 var addDeviceWindow = new AddDeviceWindow(_settlementId);
+                addDeviceWindow.Closed += async (sender, args) =>
+                {
+                    await LoadDevicesAsync();
+                };
                 addDeviceWindow.Show();
-
             }
             catch (Exception ex)
             {

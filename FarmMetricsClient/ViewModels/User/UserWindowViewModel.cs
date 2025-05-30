@@ -89,35 +89,8 @@ namespace FarmMetricsClient.ViewModels.User
 
         private void ShowFarms()
         {
-            CurrentView = new UserFarmsViewModel(
-                _userId,
-                ShowAddFarmDialog,
-                ShowFarmDetails
-            );
+            CurrentView = new UserFarmsViewModel(_userId);
         }
-
-        private void ShowFarmDetails(int farmId)
-        {
-            CurrentView = new FarmDetailsViewModel(
-                farmId,
-                () => ShowFarms()
-            );
-        }
-
-        private void ShowAddFarmDialog()
-        {
-            CurrentView = new AddFarmViewModel(
-                _userId,
-                UserProfile.Settlement ?? "Не указан",
-                async () =>
-                {
-                    await Task.Delay(100);
-                    ShowFarms();
-                },
-                () => ShowFarms()
-            );
-        }
-
 
         private async Task DeleteAccount()
         {

@@ -19,17 +19,8 @@
             <Button Content="Добавить устройство"
                 Click="OnAddDeviceClick"
                 Margin="5" />
-            <Button Command="{Binding RefreshCommand}"
-                ToolTip.Tip="Обновить список устройств"
-                Margin="5">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <Image Source="avares://FarmMetricsClient/Assets/refresh-icon.png"
-                        Width="16"
-                        Height="16" />
-                    <TextBlock Text="Обновить" />
-                </StackPanel>
-            </Button>
         </StackPanel>
+
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10">
             <ItemsControl ItemsSource="{Binding Devices}" Name="DevicesList">
                 <ItemsControl.ItemTemplate>

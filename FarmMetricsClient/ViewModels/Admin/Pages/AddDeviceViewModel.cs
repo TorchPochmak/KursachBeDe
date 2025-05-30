@@ -22,6 +22,29 @@ namespace FarmMetricsClient.ViewModels.Admin.Pages
         public ObservableCollection<Metric> Metrics { get; } = new();
         public Action? CloseAction { get; set; }
 
+        private ObservableCollection<Metric> _availableMetrics = new();
+        public ObservableCollection<Metric> AvailableMetrics
+        {
+            get => _availableMetrics;
+            set => SetField(ref _availableMetrics, value);
+        }
+
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                if (SetField(ref _errorMessage, value))
+                {
+                    OnPropertyChanged(nameof(HasErrorMessage));
+                }
+            }
+        }
+
+        public bool HasErrorMessage => !string.IsNullOrEmpty(ErrorMessage);
+
+
         public Metric SelectedMetric
         {
             get => _selectedMetric;
@@ -53,25 +76,34 @@ namespace FarmMetricsClient.ViewModels.Admin.Pages
         {
             try
             {
-                var metrics = await _apiClient.GetAllMetricsAsync();
-                Metrics.Clear();
+                var allMetrics = await _apiClient.GetAllMetricsAsync();
+                var existingDevices = await _apiClient.GetDevicesBySettlementAsync(_settlementId);
 
-                foreach (var metric in metrics)
+                var availableMetrics = allMetrics
+                    .Where(m => !existingDevices.Any(d => d.MetricName == m.Name))
+                    .ToList();
+
+                AvailableMetrics.Clear();
+                foreach (var metric in availableMetrics)
                 {
-                    Metrics.Add(metric);
+                    AvailableMetrics.Add(metric);
                 }
 
-                if (Metrics.Any())
+                if (AvailableMetrics.Any())
                 {
-                    SelectedMetric = Metrics.First();
+                    SelectedMetric = AvailableMetrics.First();
+                }
+                else
+                {
+                    ErrorMessage = "Все доступные метрики уже добавлены в этот населенный пункт";
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при загрузке метрик: {ex.Message}");
+                ErrorMessage = $"Ошибка при загрузке метрик: {ex.Message}";
+                Console.WriteLine(ErrorMessage);
             }
         }
-
         public async Task AddDevice()
         {
             try

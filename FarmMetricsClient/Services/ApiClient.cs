@@ -220,43 +220,6 @@ namespace FarmMetricsClient.Services
 
             return response.IsSuccessStatusCode;
         }
-        // черновики 
-        public async Task<List<Farm>?> GetUserFarmsAsync(int userId)
-        {
-            var response = await _httpClient.GetAsync($"api/farms/user/{userId}");
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<List<Farm>>(
-                    await response.Content.ReadAsStringAsync());
-            }
-            return null;
-        }
-
-        public async Task<Farm?> GetFarmDetailsAsync(int farmId)
-        {
-            var response = await _httpClient.GetAsync($"api/farms/{farmId}");
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<Farm>(
-                    await response.Content.ReadAsStringAsync());
-            }
-            return null;
-        }
-
-        public async Task<HttpResponseMessage> AddFarmAsync(Farm farm)
-        {
-            var content = new StringContent(
-                JsonConvert.SerializeObject(farm),
-                Encoding.UTF8,
-                "application/json"
-            );
-            return await _httpClient.PostAsync("api/farm/create", content);
-        }
-
-        public async Task<HttpResponseMessage> DeleteFarmAsync(int farmId)
-        {
-            return await _httpClient.DeleteAsync($"api/farms/{farmId}");
-        }
 
 
         public async Task<List<MetricData>> GetMetricsBySettlementAsync(int settlementId)
@@ -270,13 +233,17 @@ namespace FarmMetricsClient.Services
             return new List<MetricData>();
         }
 
+
+
         public class MetricData
         {
             public int Id { get; set; }
             public DateTime RegisteredAt { get; set; }
             public double MetricValue { get; set; }
+            public int SettleMetricDeviceId { get; set; }
             public MetricDevice Device { get; set; }
         }
+
         public class MetricDevice
         {
             public int Id { get; set; }
@@ -345,6 +312,7 @@ namespace FarmMetricsClient.Services
         public class Device
         {
             public int Id { get; set; }
+            public int MetricId { get; set; }
             public string MetricName { get; set; } = string.Empty;
             public double MinValue { get; set; }
             public double MaxValue { get; set; }
@@ -354,27 +322,12 @@ namespace FarmMetricsClient.Services
         {
             public int Id { get; set; }
             public int MetricId { get; set; }
+            public string MetricName { get; set; } = string.Empty;
             public double MinValue { get; set; }
             public double MaxValue { get; set; }
             public int SettlementId { get; set; }
             public DateTime RegisteredAt { get; set; }
 
-        }
-        public class Farm
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-            public int UserId { get; set; }
-            public int SettlementId { get; set; }
-            public string Settlement { get; set; } = string.Empty;
-            public List<Culture> Cultures { get; set; } = new();
-            public List<Metric> Metrics { get; set; } = new();
-            public List<Harvest> Harvests { get; set; } = new();
-        }
-        public class Culture
-        {
-            public string Name { get; set; } = string.Empty;
-            public double Area { get; set; }
         }
         public class Metric
         {
@@ -383,14 +336,181 @@ namespace FarmMetricsClient.Services
             public double MinValue { get; set; }
             public double MaxValue { get; set; }
         }
+        public class AvailableDevice
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public double MinValue { get; set; }
+            public double MaxValue { get; set; }
+        }
 
+        public async Task<Farm?> GetFarmAsync(string farmId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/farm/get?id={Uri.EscapeDataString(farmId)}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonConvert.DeserializeObject<Farm>(
+                        await response.Content.ReadAsStringAsync());
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public class Farm
+        {
+            public string Id { get; set; } = string.Empty;
+            public string Name { get; set; } = string.Empty;
+            public int UserId { get; set; }
+            public int SettlementId { get; set; }
+            public string SettlementName { get; set; } = string.Empty;
+            public List<Culture> Cultures { get; set; } = new();
+            public List<FarmMetric> Metrics { get; set; } = new();
+            public List<Harvest> Harvests { get; set; } = new();
+            public List<FarmComment> Comments { get; set; } = new();
+        }
+
+        public class Culture
+        {
+            public string Name { get; set; } = string.Empty;
+            public double SquareMeters { get; set; }
+        }
+
+        public class FarmMetric
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Value { get; set; }
+            public int DeviceId { get; set; }
+        }
 
         public class Harvest
         {
-            public DateTime Date { get; set; }
-            public string CultureName { get; set; } = string.Empty;
-            public double Amount { get; set; }
+            public string Id { get; set; } = string.Empty;
+            public DateTime RegisteredAt { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Info { get; set; } = string.Empty;
         }
+
+        public class FarmComment
+        {
+            public string Id { get; set; } = string.Empty;
+            public DateTime Date { get; set; }
+            public string Info { get; set; } = string.Empty;
+        }
+
+        // И метод для получения ферм
+        public async Task<List<Farm>> GetUserFarmsAsync(int userId)
+        {
+            var response = await _httpClient.GetAsync($"api/farm/getall?userId={userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<Farm>>(
+                    await response.Content.ReadAsStringAsync());
+            }
+            return new List<Farm>();
+        }
+
+        public async Task<List<AvailableDevice>> GetAvailableDevicesAsync(int settlementId)
+        {
+            var response = await _httpClient.GetAsync($"api/farm/available-metrics?settlementId={settlementId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<AvailableDevice>>(await response.Content.ReadAsStringAsync());
+            }
+            return new List<AvailableDevice>();
+        }
+
+        public async Task<bool> CreateFarmAsync(string name, int settlementId, int userId)
+        {
+            var url = $"api/farm/create?name={Uri.EscapeDataString(name)}&settlementId={settlementId}&userId={userId}";
+            var response = await _httpClient.PostAsync(url, null);
+            return response.IsSuccessStatusCode;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        // Добавить культуру
+        public async Task<bool> AddCultureAsync(string farmId, string name, double area)
+        {
+            var response = await _httpClient.PostAsync(
+                $"api/farm/cultures/add?farmId={farmId}&name={Uri.EscapeDataString(name)}&squareMeters={area}", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        // Удалить культуру
+        public async Task<bool> DeleteCultureAsync(string farmId, string name)
+        {
+            var response = await _httpClient.DeleteAsync(
+                $"api/farm/cultures/delete?farmId={farmId}&cultureName={Uri.EscapeDataString(name)}");
+            return response.IsSuccessStatusCode;
+        }
+
+        // Добавить метрику
+        public async Task<bool> AddMetricAsync(string farmId, int deviceId, double value)
+        {
+            var response = await _httpClient.PostAsync(
+                $"api/farm/metrics/add?farmId={farmId}&deviceId={deviceId}&value={value}",
+                null
+            );
+            return response.IsSuccessStatusCode;
+        }
+
+
+        // Удалить метрику
+        public async Task<bool> DeleteMetricAsync(string farmId, int deviceId)
+        {
+            var response = await _httpClient.DeleteAsync(
+                $"api/farm/metrics/delete?farmId={farmId}&deviceId={deviceId}");
+            return response.IsSuccessStatusCode;
+        }
+
+
+
+        // Добавить сбор урожая
+        public async Task<bool> AddHarvestAsync(string farmId, string name, string info)
+        {
+            var response = await _httpClient.PostAsync(
+                $"api/farm/harvests/add?farmId={farmId}&name={Uri.EscapeDataString(name)}&info={Uri.EscapeDataString(info)}", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        // Добавить комментарий
+        public async Task<bool> AddCommentAsync(string farmId, string info)
+        {
+            var response = await _httpClient.PostAsync(
+                $"api/farm/comments/add?farmId={farmId}&info={Uri.EscapeDataString(info)}", null);
+            return response.IsSuccessStatusCode;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // -----------------------------------------------------------------------------------------------------------------------
         public async Task<List<Watch>?> GetAvailableWatchesAsync(string? filter = null, string? sortOption = null)

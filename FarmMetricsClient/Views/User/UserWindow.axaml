@@ -17,14 +17,8 @@
         <DataTemplate DataType="{x:Type pages:EditProfileViewModel}">
             <views:EditProfileView Background="Transparent" />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:UserFarmsViewModel}">
+         <DataTemplate DataType="{x:Type pages:UserFarmsViewModel}">
             <views:UserFarmsView Background="Transparent" />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:FarmDetailsViewModel}">
-            <views:FarmDetailsView Background="Transparent" />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type pages:AddFarmViewModel}">
-            <views:AddFarmView Background="Transparent" />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pages:UserMetricsViewModel}">
             <views:UserMetricsView Background="Transparent" />
@@ -60,8 +54,7 @@
 
                         <Button Command="{Binding ShowEditProfileCommand}"
                             HorizontalAlignment="Center"
-                            Width="150" Margin="0,5,0,0"
-                            Classes="menu-button">
+                            Width="150" Classes="primary">
                             <TextBlock Text="Редактировать" VerticalAlignment="Center" FontSize="14" />
                         </Button>
                     </StackPanel>
@@ -72,14 +65,6 @@
                         <Image Source="avares://FarmMetricsClient/Assets/farm-icon.png"
                             Width="24" Height="24" Margin="0,0,10,0" />
                         <TextBlock Text="Мои участки" VerticalAlignment="Center" FontSize="14" />
-                    </StackPanel>
-                </Button>
-
-                <Button Command="{Binding ShowHarvestsCommand}" Classes="menu-button" Margin="10,5">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Image Source="avares://FarmMetricsClient/Assets/harvest-icon.png"
-                            Width="24" Height="24" Margin="0,0,10,0" />
-                        <TextBlock Text="Сборы урожая" VerticalAlignment="Center" FontSize="14" />
                     </StackPanel>
                 </Button>
 
